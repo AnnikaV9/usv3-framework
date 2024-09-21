@@ -36,7 +36,7 @@ Different events take different arguments for `run()`:
 |leave|bot, sender|
 |whisper|bot, text, sender, tripcode|
 
-After adding modules, you can register them by adding them to [config/modules.json](config/modules.json)
+After adding modules, you can register them by adding them to [config/modules.yml](config/modules.yml)
 
 For chat/whisper commands, the name that you register the module as will be the command that calls it. You can add an alias for each one if a shorter alternate command is needed.
 
