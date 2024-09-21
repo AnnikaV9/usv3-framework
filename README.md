@@ -40,4 +40,4 @@ After adding modules, you can register them by adding them to [config/modules.js
 
 For chat/whisper commands, the name that you register the module as will be the command that calls it. You can add an alias for each one if a shorter alternate command is needed.
 
-The `reload` module is provided for live reloading every module and any new modules that have been registered without disconnecting the bot. Note that this will re-run `on_load()` in all modules that have it. 
+The `reload` command can be used for live reloading every module and any new modules that have been registered without disconnecting the bot. Note that this will re-run `on_load()` in all modules that have it. 
