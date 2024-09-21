@@ -1,9 +1,9 @@
-import json
+import yaml
 import importlib
 
 def load(bot, reload=False) -> int:
-    with open("config/modules.json", "r", encoding="utf-8") as module_map_file:
-        module_map = json.load(module_map_file)
+    with open("config/modules.yml", "r") as module_map_file:
+        module_map = yaml.safe_load(module_map_file)
 
     modules = {"command": {}, "message": {}, "join": {}, "leave": {}, "whisper": {}}
     num_modules = 0

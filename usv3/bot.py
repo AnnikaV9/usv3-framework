@@ -72,11 +72,11 @@ class Bot:
                         if resp["from"] != self.config["nick"] and not resp["text"].startswith("You whispered to"):
                             text = resp["text"].removeprefix(f"{resp['from']} whispered: ")
                             for command in self.modules["whisper"]:
-                                if resp["text"].startswith(f"{command} ") or resp["text"] == f"{command}":
+                                if text.startswith(f"{command} ") or text == f"{command}":
                                     asyncio.create_task(self.modules["whisper"][command].run(self, text, resp["from"], trip))
 
                                 if "alias" in self.cmd_map["whisper"][command]:
-                                    if resp["text"].startswith(f"{self.cmd_map['whisper'][command]['alias']} ") or resp["text"] == f"{self.cmd_map['whisper'][command]['alias']}":
+                                    if text.startswith(f"{self.cmd_map['whisper'][command]['alias']} ") or text == f"{self.cmd_map['whisper'][command]['alias']}":
                                         asyncio.create_task(self.modules["whisper"][command].run(self, text, resp["from"], trip))
 
                 case "onlineAdd":

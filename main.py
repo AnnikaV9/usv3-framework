@@ -10,7 +10,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         raise SystemExit
 
-    except Exception as e:
-        print(f"Error: {e}")
+    except:
         traceback.print_exc()
         raise SystemExit
