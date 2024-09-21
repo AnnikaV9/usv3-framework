@@ -1,0 +1,7 @@
+*.py             text diff=python
+*.yml            text
+*.gitattributes  text
+*.gitignore      text
+*.editorconfig   text
+*.md             text diff=markdown
+LICENSE          text
