@@ -10,7 +10,8 @@ Prefix: {bot.config['prefix']}
 Commands: {', '.join(commands.keys())}
 \\-
 Run .help <command> for more information about a specific command.
-{"\\-\nhttps://github.com/AnnikaV9/usv3-framework" if not bot.config['hide_credits'] else ''}""")
+\\-
+{"https://github.com/AnnikaV9/usv3-framework" if not bot.config['hide_credits'] else ''}""")
 
 
         else:
