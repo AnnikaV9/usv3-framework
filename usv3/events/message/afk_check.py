@@ -12,8 +12,5 @@ class Module:
 
         for user in bot.afk_users:
             if f"@{user}" in text.split():
-                if bot.afk_users[user]["reason"]:
-                    await bot.send(text=f"**@{sender}** {user} is currently AFK ({bot.afk_users[user]['reason']})")
-
-                else:
-                    await bot.send(text=f"**@{sender}** {user} is currently AFK")
+                reason = bot.afk_users[user]["reason"]
+                await bot.send(text=f"""**@{sender}** {user} is currently AFK{f" ({bot.afk_users[user]['reason']})" if reason else ""}""")

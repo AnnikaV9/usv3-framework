@@ -42,7 +42,8 @@ class Bot:
         while True:
             resp = await self.ws.recv()
             resp = json.loads(resp)
-            if resp["cmd"] == "chat":
+            match resp["cmd"]:
+                case "chat":
                     trip = resp.get("trip")
                     if trip == "":
                         trip = None
@@ -59,7 +60,7 @@ class Bot:
                                 if resp["text"].startswith(f"{self.config['prefix']}{self.cmd_map['command'][command]['alias']} ") or resp["text"] == f"{self.config['prefix']}{self.cmd_map['command'][command]['alias']}":
                                     asyncio.create_task(self.modules["command"][command].run(self, resp["text"], resp["nick"], trip, resp["level"]))
 
-            elif resp["cmd"] == "info":
+                case "info":
                     if resp.get("type") == "whisper":
                         trip = resp.get("trip")
                         if trip == "":
@@ -75,7 +76,7 @@ class Bot:
                                     if resp["text"].startswith(f"{self.cmd_map['whisper'][command]['alias']} ") or resp["text"] == f"{self.cmd_map['whisper'][command]['alias']}":
                                         asyncio.create_task(self.modules["whisper"][command].run(self, text, resp["from"], trip))
 
-            elif resp["cmd"] == "onlineAdd":
+                case "onlineAdd":
                     trip = resp.get("trip")
                     if trip == "":
                         trip = None
@@ -87,7 +88,7 @@ class Bot:
                     for handler in self.modules["join"]:
                         asyncio.create_task(self.modules["join"][handler].run(self, resp["nick"], resp["hash"], trip))
 
-            elif resp["cmd"] == "onlineRemove":
+                case "onlineRemove":
                     nick = resp["nick"]
                     for handler in self.modules["leave"]:
                         asyncio.create_task(self.modules["leave"][handler].run(self, resp["nick"]))
@@ -96,7 +97,7 @@ class Bot:
                     self.online_hashes.pop(nick)
                     self.online_trips.pop(nick)
 
-            elif resp["cmd"] == "onlineSet":
+                case "onlineSet":
                     for user in resp["users"]:
                         nick = user["nick"]
                         self.online_users.append(nick)

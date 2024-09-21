@@ -3,7 +3,15 @@ class Module:
         args = text.split()
         commands = bot.cmd_map["command"]
         if len(args) == 1:
-            await bot.send(text=f"**@{sender}**\n\\-\nPrefix: {bot.config['prefix']}\n\\-\nCommands: {', '.join(commands.keys())}\n\\-\nRun .help <command> for more information about a specific command.\n\\-\nhttps://github.com/AnnikaV9/usv3")
+            await bot.send(text=f"""**@{sender}**
+\\-
+Prefix: {bot.config['prefix']}
+\\-
+Commands: {', '.join(commands.keys())}
+\\-
+Run .help <command> for more information about a specific command.
+{"\\-\nhttps://github.com/AnnikaV9/usv3" if not bot.config['hide_credits'] else ''}""")
+
 
         else:
             command = args[1]
