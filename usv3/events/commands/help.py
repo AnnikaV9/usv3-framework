@@ -17,7 +17,7 @@ Run .help <command> for more information about a specific command.
         else:
             command = args[1]
             if command in commands.keys():
-                await bot.send(text=f"**@{sender}** `{command}`\n\\-\n{commands[command]["desc"]}")
+                await bot.send(text=f"**@{sender}** `{command}`\n\\-\n{commands[command]['desc']}")
 
             else:
                 await bot.send(text=f"**@{sender}** No such command: {command}")
