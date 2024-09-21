@@ -8,7 +8,10 @@ import usv3.loader
 class Bot:
     def __init__(self) -> None:
         self.ws: websockets.WebSocketClientProtocol
-        with open("config/core_config.yml", "r") as core_config, open("config/cmd_config.yml", "r") as cmd_config, open("config/api_keys.yml", "r") as api_keys, open("config/admins.yml", "r") as admins:
+        with (open("config/core_config.yml", "r") as core_config,
+              open("config/cmd_config.yml", "r") as cmd_config,
+              open("config/api_keys.yml", "r") as api_keys,
+              open("config/admins.yml", "r") as admins):
             self.config = yaml.safe_load(core_config)
             self.cmd_config = yaml.safe_load(cmd_config)
             self.api_keys = yaml.safe_load(api_keys)
