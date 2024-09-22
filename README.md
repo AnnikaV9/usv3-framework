@@ -21,7 +21,6 @@ A basic module for the command event looks like this:
 ```python
 class Module:
     async def run(bot, text, sender, trip, ulevel):
-        # Whatever you want here
 ```
 If your module needs to do stuff on load, you can do so with `on_load()`:
 ```python
@@ -31,7 +30,6 @@ class Module:
         # Whatever else that needs to be done
 
     async def run(bot, text, sender, trip, ulevel):
-        # Whatever you want here
 ```
 `on_load()` should not be asynchronous.
 
