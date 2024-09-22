@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "usv3"
+version = "v1.19.6"
+description = "An extensible bot framework for hack.chat"
+license = "Unlicense"
+authors = ["AnnikaV9 <carrot.moncher@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+asyncio = "~3.4.3"
+PyYAML = "~6.0.2"
+websockets = "~13.0.1"
+uvloop = "~0.20.0"
+
+[tool.poetry.scripts]
+bot = "usv3.entry:main"
+register = "tools.register:main"

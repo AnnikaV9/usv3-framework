@@ -1,0 +1,6 @@
+[virtualenvs]
+in-project = true
+
+[installer]
+modern-installation = true
+parallel = true

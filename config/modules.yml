@@ -1,33 +1,33 @@
 command:
   help:
     desc: "Displays information about available commands.\nUsage:\n.help [command]"
-    module: "commands.help"
-    alias: "h"
+    module: commands.help
+    alias: h
   afk:
     desc: "Marks yourself AFK (Away From Keyboard).\nUsage:\n.afk [reason]"
-    module: "commands.afk"
+    module: commands.afk
   reload:
     desc: "(Admin only) Reloads all modules.\nUsage:\n.reload"
-    module: "commands.reload"
+    module: commands.reload
   scramble:
     desc: "Starts a scramble game.\nUsage:\n.scramble"
-    module: "commands.scramble"
+    module: commands.scramble
   coin:
     desc: "Flip a coin.\nUsage:\n.coin"
-    module: "commands.coin"
+    module: commands.coin
   dice:
     desc: "Roll a dice.\nUsage:\n.dice"
-    module: "commands.dice"
+    module: commands.dice
   aliases:
     desc: "Lists aliases for commands.\nUsage:\n.aliases"
-    module: "commands.aliases"
+    module: commands.aliases
 message:
   afk_check:
-    module: "message.afk_check"
+    module: message.afk_check
   scramble_check:
-    module: "message.scramble_check"
+    module: message.scramble_check
 join: {}
 leave: {}
 whisper:
   reload:
-    module: "whisper.reload"
+    module: whisper.reload

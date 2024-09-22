@@ -3,15 +3,10 @@ An extensible bot framework for [hack.chat](https://hack.chat)
 
 
 ## Setting up
-1. Install dependencies in [setup/core_requirements.txt](setup/core_requirements.txt)
-   ```
-   python -m venv .venv
-   source .venv/bin/activate
-   pip install -r setup/core_requirements.txt
-   ```
-
+usv3 requires >= Python 3.10 and [poetry](https://python-poetry.org/)
+1. Set up the project with `poetry install`
 3. Configure the bot in [config](config)
-4. Run the bot with `python main.py`
+4. Run the bot with `poetry run bot`
 
 
 ## Adding modules
@@ -43,7 +38,7 @@ Different events take different arguments for `run()`:
 
 Configuration options from [config/admins.yml](config/admins.yml), [config/api_keys.yml](config/api_keys.yml), [config/core_config.yml](config/core_config.yml) and [config/cmd_config.yml](config/cmd_config.yml) are loaded as `bot.admins`, `bot.api_keys`, `bot.config` and `bot.cmd_config` respectively.
 
-After adding modules, you can register them in [config/modules.yml](config/modules.yml)
+After adding modules, you can register them with `poetry run register <event> <name>`. This will add your modules to [config/modules.yml](config/modules.yml) and add any specified dependencies to [pyproject.toml](pyproject.toml). Run `poetry install` again after registering new modules to install their dependencies.
 
 For chat/whisper commands, the name that you register the module as will be the command that calls it. You can add an alias for each one if a shorter alternate command is needed.
 
