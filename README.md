@@ -9,8 +9,8 @@ usv3 requires >= Python 3.10 and [poetry](https://python-poetry.org/)
 4. Run the bot with `poetry run bot`
 
 
-## Adding modules
-usv3 can be extended by adding and registering modules. Modules are stored in the [usv3/events](usv3/events) directory. Each module should be in its own file and have a class named `Module`. The class should have a method named `run()` that is called when the module is triggered.
+## Adding your own stuff
+usv3 can be extended by adding modules that get triggered on various events.
 
 A basic module for the command event looks like this:
 ```python
@@ -38,11 +38,12 @@ Different events take different arguments for `run()`:
 
 Configuration options from [config/admins.yml](config/admins.yml), [config/api_keys.yml](config/api_keys.yml), [config/core_config.yml](config/core_config.yml) and [config/cmd_config.yml](config/cmd_config.yml) are loaded as `bot.admins`, `bot.api_keys`, `bot.config` and `bot.cmd_config` respectively.
 
-After creating a module, you can add it with `poetry run register <module>.py`. This will add your module to its respective event in [usv3/events](usv3/events), register is to [config/modules.yml](config/modules.yml) and add any specified dependencies to [pyproject.toml](pyproject.toml). Run `poetry install` again after registering new modules to install their dependencies.
+After creating a module, you can add it with `poetry run register <module>.py`. This will copy it to its respective event in [usv3/events](usv3/events), register it in [config/modules.yml](config/modules.yml) and add any specified dependencies to [pyproject.toml](pyproject.toml). The new dependencies can be installed by running `poetry install` again.
 
 For chat/whisper commands, the name that you register the module as will be the command that calls it. You can add an alias for each one if a shorter alternate command is needed.
 
-The `reload` command live reloads every module and any new modules that have been registered without disconnecting the bot. Note that this will re-run `on_load()` in all modules that have it. All configuration files except [config/core_config.yml](config/core_config.yml) will be reloaded.
+The `reload` command live reloads all loaded modules and any new modules that have been registered. Note that this will re-run `on_load()` in all modules that have it. All configuration files except [config/core_config.yml](config/core_config.yml) will be reloaded.
+
 
 ## Replying to the server
 `bot.send()` can be used to reply to the server. It's defined in the core framework as:
