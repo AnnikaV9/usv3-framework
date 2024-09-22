@@ -8,17 +8,14 @@ import usv3.loader
 class Bot:
     def __init__(self) -> None:
         self.ws: websockets.WebSocketClientProtocol
-        with (open("config/core_config.yml", "r") as core_config,
-              open("config/cmd_config.yml", "r") as cmd_config,
-              open("config/api_keys.yml", "r") as api_keys,
-              open("config/admins.yml", "r") as admins):
+        with open("config/core_config.yml", "r") as core_config:
             self.config = yaml.safe_load(core_config)
-            self.cmd_config = yaml.safe_load(cmd_config)
-            self.api_keys = yaml.safe_load(api_keys)
-            self.admins = yaml.safe_load(admins)
 
         self.modules = {}
         self.cmd_map = {}
+        self.cmd_config = {}
+        self.api_keys = {}
+        self.admins = []
         usv3.loader.load(self)
 
         self.online_users = []
@@ -73,11 +70,11 @@ class Bot:
                             text = resp["text"].removeprefix(f"{resp['from']} whispered: ")
                             for command in self.modules["whisper"]:
                                 if text.startswith(f"{command} ") or text == f"{command}":
-                                    asyncio.create_task(self.modules["whisper"][command].run(self, text, resp["from"], trip))
+                                    asyncio.create_task(self.modules["whisper"][command].run(self, text, resp["from"], trip, resp["level"]))
 
                                 if "alias" in self.cmd_map["whisper"][command]:
                                     if text.startswith(f"{self.cmd_map['whisper'][command]['alias']} ") or text == f"{self.cmd_map['whisper'][command]['alias']}":
-                                        asyncio.create_task(self.modules["whisper"][command].run(self, text, resp["from"], trip))
+                                        asyncio.create_task(self.modules["whisper"][command].run(self, text, resp["from"], trip, resp["level"]))
 
                 case "onlineAdd":
                     trip = resp.get("trip")

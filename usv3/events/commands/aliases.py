@@ -1,5 +1,5 @@
 class Module:
-    async def run(bot, text, sender, tripcode, ulevel):
+    async def run(bot, text, sender, trip, ulevel):
         aliases = {}
         for command in bot.cmd_map["command"]:
             if "alias" in bot.cmd_map["command"][command]:

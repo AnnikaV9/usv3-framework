@@ -3,4 +3,3 @@ nick: mysupercoolbot
 password: myverysecrettrippassword
 server: wss://hack.chat/chat-ws
 prefix: "%" # Prefix for commands
-hide_credits: false # Hide credits in the help command

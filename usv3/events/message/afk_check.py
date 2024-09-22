@@ -1,5 +1,5 @@
 class Module:
-    async def run(bot, text, sender, tripcode):
+    async def run(bot, text, sender, trip):
         if sender in bot.afk_users:
             if bot.afk_users[sender]["whisper"]:
                 await bot.send(text=f"/whisper {sender} -\nYou're no longer marked AFK")

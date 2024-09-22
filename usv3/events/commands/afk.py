@@ -2,7 +2,7 @@ class Module:
     def on_load(bot):
         bot.afk_users = {}
 
-    async def run(bot, text, sender, tripcode, ulevel):
+    async def run(bot, text, sender, trip, ulevel):
         if sender not in bot.afk_users:
             args = text.split()
             if len(args) == 1:

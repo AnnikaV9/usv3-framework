@@ -6,7 +6,7 @@ class Module:
         with open("assets/words.txt", "r") as wordlist:
             bot.words = wordlist.read()
 
-    async def run(bot, text, sender, tripcode, ulevel):
+    async def run(bot, text, sender, trip, ulevel):
         word = random.choice(bot.words.splitlines())
         scrambled_word = "".join(random.sample(word, len(word)))
         bot.scrambled_word = word
