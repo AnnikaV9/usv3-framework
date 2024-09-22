@@ -11,6 +11,7 @@ asyncio = "~3.4.3"
 PyYAML = "~6.0.2"
 websockets = "~13.0.1"
 uvloop = "~0.20.0"
+rich = "~13.8.1"
 
 [tool.poetry.scripts]
 bot = "usv3.entry:main"

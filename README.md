@@ -10,7 +10,7 @@ usv3 requires >= Python 3.10 and [poetry](https://python-poetry.org/)
 
 
 ## Adding modules
-usv3 can be extended by adding modules to events in [usv3/events](usv3/events)
+usv3 can be extended by adding and registering modules. Modules are stored in the [usv3/events](usv3/events) directory. Each module should be in its own file and have a class named `Module`. The class should have a method named `run()` that is called when the module is triggered.
 
 A basic module for the command event looks like this:
 ```python
@@ -38,7 +38,7 @@ Different events take different arguments for `run()`:
 
 Configuration options from [config/admins.yml](config/admins.yml), [config/api_keys.yml](config/api_keys.yml), [config/core_config.yml](config/core_config.yml) and [config/cmd_config.yml](config/cmd_config.yml) are loaded as `bot.admins`, `bot.api_keys`, `bot.config` and `bot.cmd_config` respectively.
 
-After adding modules, you can register them with `poetry run register <event> <name>`. This will add your modules to [config/modules.yml](config/modules.yml) and add any specified dependencies to [pyproject.toml](pyproject.toml). Run `poetry install` again after registering new modules to install their dependencies.
+After creating a module, you can add it with `poetry run register <module>.py`. This will add your module to its respective event in [usv3/events](usv3/events), register is to [config/modules.yml](config/modules.yml) and add any specified dependencies to [pyproject.toml](pyproject.toml). Run `poetry install` again after registering new modules to install their dependencies.
 
 For chat/whisper commands, the name that you register the module as will be the command that calls it. You can add an alias for each one if a shorter alternate command is needed.
 
