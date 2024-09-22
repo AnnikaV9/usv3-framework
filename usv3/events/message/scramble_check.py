@@ -1,3 +1,8 @@
+#
+#  Checks if command.scramble's solution is in the message
+#  and if so, announces the solver and the word.
+#
+
 class Module:
     async def run(bot, text, sender, trip):
         if bot.scrambled_word and bot.scrambled_word.lower() in text.lower():

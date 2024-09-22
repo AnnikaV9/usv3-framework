@@ -1,3 +1,7 @@
+#
+#  Simple coin flip module.
+#
+
 import random
 
 class Module:

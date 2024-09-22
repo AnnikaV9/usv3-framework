@@ -1,3 +1,11 @@
+#
+#  Setup wizard for registering new modules. This script will
+#  prompt the user for various information required to register
+#  a new module with the bot. The module will then be copied to
+#  the appropriate event folder and added to the module registry.
+#  Module dependencies will be added to pyproject.toml.
+#
+
 import os
 import yaml
 import argparse

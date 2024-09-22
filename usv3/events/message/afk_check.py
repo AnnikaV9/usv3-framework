@@ -1,3 +1,9 @@
+#
+#  Unmarks a user as AFK if they send a message. If another
+#  user mentions an AFK user, it will notify the user who
+#  mentioned them about their AFK status.
+#
+
 class Module:
     async def run(bot, text, sender, trip):
         if sender in bot.afk_users:

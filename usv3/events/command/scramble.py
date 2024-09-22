@@ -1,3 +1,8 @@
+#
+#  Sets a scrambled word for users to solve. Works in hand
+#  with the message.scramble_check module.
+#
+
 import random
 
 class Module:

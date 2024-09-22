@@ -1,3 +1,7 @@
+#
+#  Lists all commands that have aliases.
+#
+
 class Module:
     async def run(bot, text, sender, trip, ulevel):
         aliases = {}

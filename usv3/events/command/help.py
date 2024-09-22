@@ -1,3 +1,8 @@
+#
+#  Shows help for commands, dynamically generated from the
+#  command map. Hide credits if specified in the config.
+#
+
 class Module:
     async def run(bot, text, sender, trip, ulevel):
         args = text.split()

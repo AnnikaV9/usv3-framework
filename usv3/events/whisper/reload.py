@@ -1,3 +1,10 @@
+#
+#  Admin only whisper command to reload the config and all
+#  modules. Unlike command.reload, this replies with a
+#  whisper, preventing other users from knowing that the
+#  bot was reloaded.
+#
+
 import usv3.loader
 
 class Module:

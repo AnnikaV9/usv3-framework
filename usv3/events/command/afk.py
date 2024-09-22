@@ -1,3 +1,8 @@
+#
+#  Allows users to mark themselves as AFK, with an optional
+#  reason. Works in hand with the message.afk_check module.
+#
+
 class Module:
     def on_load(bot):
         bot.afk_users = {}

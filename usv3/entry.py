@@ -1,3 +1,10 @@
+#
+#  Entry point for the bot, can be run with the following ways:
+#   $ poetry run bot
+#   $ ./.venv/bin/bot
+#   $ ./.venv/bin/python .venv/bin/bot
+#
+
 import traceback
 import asyncio
 import uvloop

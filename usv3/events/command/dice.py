@@ -1,3 +1,7 @@
+#
+#  Simple dice roll module.
+#
+
 import random
 
 class Module:

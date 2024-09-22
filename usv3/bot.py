@@ -1,3 +1,8 @@
+#
+#  The main bot class that handles the connection to the server
+#  and triggers appropriate events.
+#
+
 import json
 import yaml
 import asyncio
