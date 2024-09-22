@@ -32,11 +32,11 @@ def register_module(event, name) -> None:
                 module_map[event][name]["alias"] = alias
 
         module_map[event][name]["module"] = f"{event}.{name}"
-        deps = input("""\nSpecify dependencies for this module
+        print("""\nSpecify dependencies for this module
 Comma separated, leave blank for none.
 Format: name@version,name@version
-See https://python-poetry.org/docs/dependency-specification/ on how to specify version constraints.
-Enter dependencies: """)
+See https://python-poetry.org/docs/dependency-specification/ on how to specify version constraints.""")
+        deps = input("Enter dependencies: ")
         if deps:
             deps = deps.split(",")
             subprocess.run(["poetry", "add", "-G", f"cmd_{name}", "--lock"] + deps, check=True)
