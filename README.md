@@ -72,7 +72,10 @@ An alternate command:
 ```python
 await bot.send(cmd="changecolor", color="ff0000")
 ```
-To reply to users in public chat with a consistent format, use `bot.reply()`:
+To reply to users in chat with a consistent format, use `bot.reply()`:
 ```python
 await bot.reply(sender, "Hello!")
 ```
+A whisper shortcut is also provider:
+```python
+await bot.whisper(sender, "Don't tell anyone")
