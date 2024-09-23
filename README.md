@@ -76,6 +76,6 @@ To reply to users in chat with a consistent format, use `bot.reply()`:
 ```python
 await bot.reply(sender, "Hello!")
 ```
-A whisper shortcut is also provider:
+A whisper shortcut is also provided:
 ```python
 await bot.whisper(sender, "Don't tell anyone")
