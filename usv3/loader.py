@@ -3,29 +3,37 @@
 #
 
 import os
-import yaml
+import sys
 import importlib
+from loguru import logger
+from ruamel.yaml import YAML
 
 def load(bot, reload=False) -> int:
+    yaml = YAML(typ="safe")
     with (open("config/cmd_config.yml", "r") as cmd_config,
           open("config/api_keys.yml", "r") as api_keys,
           open("config/admins.yml", "r") as admins):
-        bot.cmd_config = yaml.safe_load(cmd_config)
-        bot.api_keys = yaml.safe_load(api_keys)
-        bot.admins = yaml.safe_load(admins)
+        bot.cmd_config = yaml.load(cmd_config)
+        bot.api_keys = yaml.load(api_keys)
+        bot.admins = yaml.load(admins)
 
     module_map = find_modules()
     modules = {"command": {}, "message": {}, "join": {}, "leave": {}, "whisper": {}}
     num_modules = 0
     for event in module_map:
         for name in module_map[event]:
-            module = importlib.import_module(f"usv3.events.{module_map[event][name]['module']}")
-            if reload:
-                importlib.reload(module)
+            try:
+                module = importlib.import_module(f"usv3.events.{module_map[event][name]['module']}")
+                if reload:
+                    importlib.reload(module)
 
-            modules[event][name] = module.Module
-            if hasattr(module.Module, "on_load"):
-                module.Module.on_load(bot)
+                modules[event][name] = module.Module
+                if hasattr(module.Module, "on_load"):
+                    module.Module.on_load(bot)
+
+            except Exception as e:
+                logger.error(f"Failed to load module {event}.{name}: {e}")
+                continue
 
             if hasattr(module.Module, "description"):
                 module_map[event][name]["description"] = module.Module.description
@@ -41,7 +49,7 @@ def load(bot, reload=False) -> int:
 
             num_modules += 1
 
-    print(f"Loaded {num_modules} modules {'(reloaded)' if reload else ''}")
+    logger.info(f"Loaded {num_modules} modules {'(reloaded)' if reload else ''}")
     bot.modules, bot.cmd_map = modules, module_map
     return num_modules
 

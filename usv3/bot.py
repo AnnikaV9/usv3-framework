@@ -4,17 +4,20 @@
 #
 
 import json
-import yaml
 import asyncio
 import websockets
+from loguru import logger
+from ruamel.yaml import YAML
 
 import usv3.loader
+import usv3.runner
 
 class Bot:
     def __init__(self) -> None:
         self.ws: websockets.WebSocketClientProtocol
+        yaml = YAML(typ="safe")
         with open("config/core_config.yml", "r") as core_config:
-            self.config = yaml.safe_load(core_config)
+            self.config = yaml.load(core_config)
 
         self.modules = {}
         self.cmd_map = {}
@@ -62,6 +65,9 @@ class Bot:
                 case "onlineSet":
                     await self.handle_set(resp)
 
+                case "warn":
+                    logger.warning(f"Server sent a warn: {resp['text']}")
+
     async def handle_chat(self, resp) -> None:
         trip = resp.get("trip")
         if trip == "":
@@ -83,7 +89,7 @@ class Bot:
                         await self.reply(resp["nick"], "You don't have permission to use this command")
 
                     else:
-                        asyncio.create_task(self.modules["command"][command].run(self, resp["text"], resp["nick"], trip, resp["level"]))
+                        asyncio.create_task(usv3.runner.run(self.modules["command"][command].run, f"command.{command}", self, resp["text"], resp["nick"], trip, resp["level"]))
 
     async def handle_whisper(self, resp) -> None:
         trip = resp.get("trip")
@@ -104,7 +110,7 @@ class Bot:
                         await self.send(cmd="whisper", nick=resp["from"], text="You don't have permission to use this command")
 
                     else:
-                        asyncio.create_task(self.modules["whisper"][command].run(self, text, resp["from"], trip, resp["level"]))
+                        asyncio.create_task(usv3.runner.run(self.modules["whisper"][command].run, f"whisper.{command}", self, text, resp["from"], trip, resp["level"]))
 
     async def handle_join(self, resp) -> None:
         trip = resp.get("trip")
@@ -116,19 +122,19 @@ class Bot:
         self.online_hashes[nick] = resp["hash"]
         self.online_trips[nick] = trip
         for handler in self.modules["join"]:
-            asyncio.create_task(self.modules["join"][handler].run(self, resp["nick"], resp["hash"], trip))
+            asyncio.create_task(usv3.runner.run(self.modules["join"][handler].run, f"join.{handler}", self, resp["nick"], resp["hash"], resp["trip"]))
 
     async def handle_leave(self, resp) -> None:
         nick = resp["nick"]
         for handler in self.modules["leave"]:
-            asyncio.create_task(self.modules["leave"][handler].run(self, resp["nick"]))
+            asyncio.create_task(usv3.runner.run(self.modules["leave"][handler].run, f"leave.{handler}", self, resp["nick"]))
 
         self.online_users.remove(nick)
         self.online_hashes.pop(nick)
         self.online_trips.pop(nick)
 
     async def handle_set(self, resp) -> None:
-        print(f"Joined {resp['channel']} on {self.config['server']}")
+        logger.info(f"Joined {resp['channel']} on {self.config['server']}")
         for user in resp["users"]:
             nick = user["nick"]
             self.online_users.append(nick)
