@@ -72,11 +72,17 @@ class Bot:
                 asyncio.create_task(self.modules["message"][handler].run(self, resp["text"], resp["nick"], trip))
 
             for command in self.modules["command"]:
-                if resp["text"].startswith(f"{self.config['prefix']}{command} ") or resp["text"] == f"{self.config['prefix']}{command}":
-                    asyncio.create_task(self.modules["command"][command].run(self, resp["text"], resp["nick"], trip, resp["level"]))
-
+                cmds_with_args = [f"{self.config['prefix']}{command} "]
+                cmds = [f"{self.config['prefix']}{command}"]
                 if "alias" in self.cmd_map["command"][command]:
-                    if resp["text"].startswith(f"{self.config['prefix']}{self.cmd_map['command'][command]['alias']} ") or resp["text"] == f"{self.config['prefix']}{self.cmd_map['command'][command]['alias']}":
+                    cmds_with_args.append(f"{self.config['prefix']}{self.cmd_map['command'][command]['alias']} ")
+                    cmds.append(f"{self.config['prefix']}{self.cmd_map['command'][command]['alias']}")
+
+                if resp["text"].startswith(tuple(cmds_with_args)) or resp["text"] in cmds:
+                    if self.cmd_map["command"][command].get("admin_only", False) and trip not in self.admins:
+                        await self.reply(resp["nick"], "You don't have permission to use this command")
+
+                    else:
                         asyncio.create_task(self.modules["command"][command].run(self, resp["text"], resp["nick"], trip, resp["level"]))
 
     async def handle_whisper(self, resp) -> None:
@@ -87,11 +93,17 @@ class Bot:
         if resp["from"] != self.config["nick"] and not resp["text"].startswith("You whispered to"):
             text = resp["text"].removeprefix(f"{resp['from']} whispered: ")
             for command in self.modules["whisper"]:
-                if text.startswith(f"{command} ") or text == f"{command}":
-                    asyncio.create_task(self.modules["whisper"][command].run(self, text, resp["from"], trip, resp["level"]))
-
+                cmds_with_args = [f"{command} "]
+                cmds = [command]
                 if "alias" in self.cmd_map["whisper"][command]:
-                    if text.startswith(f"{self.cmd_map['whisper'][command]['alias']} ") or text == f"{self.cmd_map['whisper'][command]['alias']}":
+                    cmds_with_args.append(f"{self.cmd_map['whisper'][command]['alias']} ")
+                    cmds.append(self.cmd_map['whisper'][command]['alias'])
+
+                if text.startswith(tuple(cmds_with_args)) or text in cmds:
+                    if self.cmd_map["whisper"][command].get("admin_only", False) and trip not in self.admins:
+                        await self.send(cmd="whisper", nick=resp["from"], text="You don't have permission to use this command")
+
+                    else:
                         asyncio.create_task(self.modules["whisper"][command].run(self, text, resp["from"], trip, resp["level"]))
 
     async def handle_join(self, resp) -> None:
@@ -122,3 +134,6 @@ class Bot:
             self.online_users.append(nick)
             self.online_hashes[nick] = user["hash"]
             self.online_trips[nick] = user["trip"] if user["trip"] != "" else None
+
+    async def reply(self, nick, text) -> None:
+        await self.send(text=f"**@{nick}** {text}")

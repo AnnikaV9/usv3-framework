@@ -6,6 +6,8 @@
 import random
 
 class Module:
+    description = "Sets a scrambled word for users to solve"
+
     def on_load(bot):
         bot.scrambled_word = None
         with open("assets/words.txt", "r") as wordlist:
@@ -15,4 +17,4 @@ class Module:
         word = random.choice(bot.words.splitlines())
         scrambled_word = "".join(random.sample(word, len(word)))
         bot.scrambled_word = word
-        await bot.send(text=f"**Scramble requested:** {scrambled_word}")
+        await bot.send(text=f"**Scramble started:** {scrambled_word}")

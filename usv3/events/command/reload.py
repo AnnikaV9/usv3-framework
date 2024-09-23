@@ -8,9 +8,8 @@
 import usv3.loader
 
 class Module:
-    async def run(bot, text, sender, trip, ulevel):
-        if trip not in bot.admins:
-            await bot.send(text=f"**@{sender}** You don't have permission to use this command")
-            return
+    description = "Reloads config and all modules"
+    admin_only = True
 
-        await bot.send(text=f"**@{sender}** Reloaded config and {usv3.loader.load(bot, reload=True)} modules")
+    async def run(bot, text, sender, trip, ulevel):
+        await bot.reply(sender, f"Reloaded config and {usv3.loader.load(bot, reload=True)} modules")

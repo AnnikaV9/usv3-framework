@@ -15,11 +15,21 @@ usv3 can be extended by adding modules that get triggered on various events.
 A basic module for the command event looks like this:
 ```python
 class Module:
+    # Metadata, not required. Can have the following:
+    # - description
+    # - usage
+    # - alias
+    # - admin_only (Set to anything other than False)
+    description = "Your command's help text"
+    usage = "[args1], [args2], [args3]..."
+
     async def run(bot, text, sender, trip, ulevel):
 ```
 If your module needs to do stuff on load, use `on_load()`:
 ```python
 class Module:
+    ...metadata...
+
     def on_load(bot):
         bot.myglobalvar = 1
         # Whatever else that needs to be done
@@ -38,11 +48,11 @@ Different events take different arguments for `run()`:
 
 Configuration options from [config/admins.yml](config/admins.yml), [config/api_keys.yml](config/api_keys.yml), [config/core_config.yml](config/core_config.yml) and [config/cmd_config.yml](config/cmd_config.yml) are loaded as `bot.admins`, `bot.api_keys`, `bot.config` and `bot.cmd_config` respectively.
 
-After creating a module, you can add it with `poetry run register <module>.py`. This will copy it to its respective event in [usv3/events](usv3/events), register it in [config/modules.yml](config/modules.yml) and add any specified dependencies to [pyproject.toml](pyproject.toml). The new dependencies can be installed by running `poetry install` again.
+After creating a module, place it in its respective event in [usv3/events](usv3/events). The module will be found and loaded automatically. If your module has any dependencies, add them to [pyproject.toml](pyproject.toml) under `tool.poetry.group.cmd.dependencies` and run `poetry install` again.
 
-For chat/whisper commands, the name that you register the module as will be the command that calls it. You can add an alias for each one if a shorter alternate command is needed.
+For chat/whisper commands, the name of the module will be the command that calls it. You can add an alias for each one if a shorter alternate command is needed.
 
-The `reload` command live reloads all loaded modules and any new modules that have been registered. Note that this will re-run `on_load()` in all modules that have it. All configuration files except [config/core_config.yml](config/core_config.yml) will be reloaded.
+The `reload` command live reloads all loaded modules and any new modules that have been added. Note that this will re-run `on_load()` in all modules that have it. All configuration files except [config/core_config.yml](config/core_config.yml) will be reloaded.
 
 
 ## Replying to the server
@@ -58,4 +68,8 @@ await bot.send(text="Hello World!")
 An alternate command:
 ```python
 await bot.send(cmd="changecolor", color="ff0000")
+```
+To reply to users in public chat with a consistent format, use `bot.reply()`:
+```python
+await bot.reply(sender, "Hello!")
 ```
