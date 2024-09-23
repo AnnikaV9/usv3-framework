@@ -23,6 +23,7 @@ class Module:
     description = "Your command's help text"
     usage = "[args1], [args2], [args3]..."
 
+    @staticmethod
     async def run(bot, text, sender, trip, ulevel):
 ```
 If your module needs to do stuff on load, use `on_load()`:
@@ -30,10 +31,12 @@ If your module needs to do stuff on load, use `on_load()`:
 class Module:
     ...metadata...
 
+    @staticmethod
     def on_load(bot):
         bot.myglobalvar = 1
         # Whatever else that needs to be done
 
+    @staticmethod
     async def run(bot, text, sender, trip, ulevel):
 ```
 
@@ -58,7 +61,7 @@ The `reload` command live reloads all loaded modules and any new modules that ha
 ## Replying to the server
 `bot.send()` can be used to reply to the server. It's defined in the core framework as:
 ```python
-async def send(self, cmd="chat", **kwargs) -> None:
+async def send(self, cmd: str="chat", **kwargs) -> None:
     await self.ws.send(json.dumps({"cmd": cmd, **kwargs}))
 ```
 To send a chat message:

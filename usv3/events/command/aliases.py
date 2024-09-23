@@ -5,6 +5,7 @@
 class Module:
     description = "Lists all commands that have aliases"
 
+    @staticmethod
     async def run(bot, text, sender, trip, ulevel):
         aliases = {}
         for command in bot.cmd_map["command"]:

@@ -30,7 +30,7 @@ class Bot:
         self.online_hashes = {}
         self.online_trips = {}
 
-    async def send(self, cmd="chat", **kwargs) -> None:
+    async def send(self, cmd: str="chat", **kwargs) -> None:
         await self.ws.send(json.dumps({"cmd": cmd, **kwargs}))
 
     async def main(self) -> None:
@@ -66,9 +66,9 @@ class Bot:
                     await self.handle_set(resp)
 
                 case "warn":
-                    logger.warning(f"Server sent a warn: {resp['text']}")
+                    await self.handle_warn(resp)
 
-    async def handle_chat(self, resp) -> None:
+    async def handle_chat(self, resp: dict) -> None:
         trip = resp.get("trip")
         if trip == "":
             trip = None
@@ -91,7 +91,7 @@ class Bot:
                     else:
                         asyncio.create_task(usv3.runner.run(self.modules["command"][command].run, f"command.{command}", self, resp["text"], resp["nick"], trip, resp["level"]))
 
-    async def handle_whisper(self, resp) -> None:
+    async def handle_whisper(self, resp: dict) -> None:
         trip = resp.get("trip")
         if trip == "":
             trip = None
@@ -112,7 +112,7 @@ class Bot:
                     else:
                         asyncio.create_task(usv3.runner.run(self.modules["whisper"][command].run, f"whisper.{command}", self, text, resp["from"], trip, resp["level"]))
 
-    async def handle_join(self, resp) -> None:
+    async def handle_join(self, resp: dict) -> None:
         trip = resp.get("trip")
         if trip == "":
             trip = None
@@ -124,7 +124,7 @@ class Bot:
         for handler in self.modules["join"]:
             asyncio.create_task(usv3.runner.run(self.modules["join"][handler].run, f"join.{handler}", self, resp["nick"], resp["hash"], resp["trip"]))
 
-    async def handle_leave(self, resp) -> None:
+    async def handle_leave(self, resp: dict) -> None:
         nick = resp["nick"]
         for handler in self.modules["leave"]:
             asyncio.create_task(usv3.runner.run(self.modules["leave"][handler].run, f"leave.{handler}", self, resp["nick"]))
@@ -133,7 +133,7 @@ class Bot:
         self.online_hashes.pop(nick)
         self.online_trips.pop(nick)
 
-    async def handle_set(self, resp) -> None:
+    async def handle_set(self, resp: dict) -> None:
         logger.info(f"Joined {resp['channel']} on {self.config['server']}")
         for user in resp["users"]:
             nick = user["nick"]
@@ -141,5 +141,11 @@ class Bot:
             self.online_hashes[nick] = user["hash"]
             self.online_trips[nick] = user["trip"] if user["trip"] != "" else None
 
-    async def reply(self, nick, text) -> None:
+    async def handle_warn(self, resp: dict) -> None:
+        logger.warning(f"Server sent a warn: {resp['text']}")
+
+    async def reply(self, nick: str, text: str) -> None:
         await self.send(text=f"**@{nick}** {text}")
+
+    async def whisper(self, nick: str, text: str) -> None:
+        await self.send(cmd="whisper", nick=nick, text=text)

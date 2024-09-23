@@ -12,7 +12,7 @@ from loguru import logger
 
 import usv3.bot
 
-def main():
+def main() -> None:
     try:
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
         bot = usv3.bot.Bot()

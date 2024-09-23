@@ -8,7 +8,7 @@ import importlib
 from loguru import logger
 from ruamel.yaml import YAML
 
-def load(bot, reload=False) -> int:
+def load(bot, reload: bool=False) -> int:
     yaml = YAML(typ="safe")
     with (open("config/cmd_config.yml", "r") as cmd_config,
           open("config/api_keys.yml", "r") as api_keys,
@@ -63,3 +63,10 @@ def find_modules() -> dict:
                 module_map[event][name] = {"module": f"{event}.{name}"}
 
     return module_map
+
+def unload(bot, modules: list) -> None:
+    for module in modules:
+        event, name = module.split(".")
+        del bot.modules[event][name]
+        del bot.cmd_map[event][name]
+        logger.info(f"Unloaded module {event}.{name}")

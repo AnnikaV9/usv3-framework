@@ -7,9 +7,11 @@ class Module:
     description = "Marks yourself AFK (Away From Keyboard)"
     usage = "[reason]"
 
+    @staticmethod
     def on_load(bot):
         bot.afk_users = {}
 
+    @staticmethod
     async def run(bot, text, sender, trip, ulevel):
         if sender not in bot.afk_users:
             args = text.split()
