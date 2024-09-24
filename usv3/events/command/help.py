@@ -11,8 +11,10 @@ class Module:
     @staticmethod
     async def run(bot, text, sender, trip, ulevel):
         args = text.split()
-        commands = bot.cmd_map["command"]
-        whisper_commands = bot.cmd_map["whisper"]
+        commands = ({command: bot.cmd_map["command"][command] for command in bot.cmd_map["command"] if not bot.cmd_map["command"][command].get("admin_only", False)}
+            if trip not in bot.admins else bot.cmd_map["command"])
+        whisper_commands = ({command: bot.cmd_map["whisper"][command] for command in bot.cmd_map["whisper"] if not bot.cmd_map["whisper"][command].get("admin_only", False)}
+            if trip not in bot.admins else bot.cmd_map["whisper"])
         if len(args) == 1:
             await bot.reply(sender, f"""\n\\-
 Prefix: {bot.config['prefix']}

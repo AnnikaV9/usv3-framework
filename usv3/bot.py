@@ -7,18 +7,15 @@ import json
 import asyncio
 import websockets
 from loguru import logger
-from ruamel.yaml import YAML
 
 import usv3.loader
 import usv3.runner
 
 class Bot:
-    def __init__(self) -> None:
+    def __init__(self, config: dict) -> None:
         self.ws: websockets.WebSocketClientProtocol
-        yaml = YAML(typ="safe")
-        with open("config/core_config.yml", "r") as core_config:
-            self.config = yaml.load(core_config)
 
+        self.config = config
         self.modules = {}
         self.cmd_map = {}
         self.cmd_config = {}
@@ -89,7 +86,7 @@ class Bot:
                         await self.reply(resp["nick"], "You don't have permission to use this command")
 
                     else:
-                        asyncio.create_task(usv3.runner.run(self.modules["command"][command].run, f"command.{command}", self, resp["text"], resp["nick"], trip, resp["level"]))
+                        asyncio.create_task(usv3.runner.run(self.modules["command"][command].run, f"command.{command}", self.config["debug"], self, resp["text"], resp["nick"], trip, resp["level"]))
 
     async def handle_whisper(self, resp: dict) -> None:
         trip = resp.get("trip")
@@ -110,7 +107,7 @@ class Bot:
                         await self.send(cmd="whisper", nick=resp["from"], text="You don't have permission to use this command")
 
                     else:
-                        asyncio.create_task(usv3.runner.run(self.modules["whisper"][command].run, f"whisper.{command}", self, text, resp["from"], trip, resp["level"]))
+                        asyncio.create_task(usv3.runner.run(self.modules["whisper"][command].run, f"whisper.{command}", self.config["debug"], self, text, resp["from"], trip, resp["level"]))
 
     async def handle_join(self, resp: dict) -> None:
         trip = resp.get("trip")
@@ -122,12 +119,12 @@ class Bot:
         self.online_hashes[nick] = resp["hash"]
         self.online_trips[nick] = trip
         for handler in self.modules["join"]:
-            asyncio.create_task(usv3.runner.run(self.modules["join"][handler].run, f"join.{handler}", self, resp["nick"], resp["hash"], resp["trip"]))
+            asyncio.create_task(usv3.runner.run(self.modules["join"][handler].run, f"join.{handler}", self.config["debug"], self, resp["nick"], resp["hash"], resp["trip"]))
 
     async def handle_leave(self, resp: dict) -> None:
         nick = resp["nick"]
         for handler in self.modules["leave"]:
-            asyncio.create_task(usv3.runner.run(self.modules["leave"][handler].run, f"leave.{handler}", self, resp["nick"]))
+            asyncio.create_task(usv3.runner.run(self.modules["leave"][handler].run, f"leave.{handler}", self.config["debug"], self, resp["nick"]))
 
         self.online_users.remove(nick)
         self.online_hashes.pop(nick)

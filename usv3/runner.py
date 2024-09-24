@@ -5,10 +5,11 @@
 from typing import Callable
 from loguru import logger
 
-async def run(task: Callable, module: str, *args) -> None:
+async def run(task: Callable, module: str, debug: bool, *args) -> None:
     try:
         logger.info(f"Module {module} triggered")
         await task(*args)
 
     except Exception as e:
-        logger.error(f"Exception in module {module}: {e}")
+        exc_logger = logger.exception if debug else logger.error
+        exc_logger(f"Exception in module {module} ({type(e).__name__}: {e})")

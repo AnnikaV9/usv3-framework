@@ -8,7 +8,7 @@
 import usv3.loader
 
 class Module:
-    description = "Unloads a module"
+    description = "Unloads modules"
     usage = "<event.name> [event.name] [ev..."
     admin_only = True
 

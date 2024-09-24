@@ -3,7 +3,6 @@
 #
 
 import os
-import sys
 import importlib
 from loguru import logger
 from ruamel.yaml import YAML
@@ -32,7 +31,8 @@ def load(bot, reload: bool=False) -> int:
                     module.Module.on_load(bot)
 
             except Exception as e:
-                logger.error(f"Failed to load module {event}.{name}: {e}")
+                exc_logger = logger.exception if bot.config["debug"] else logger.error
+                exc_logger(f"Failed to load module {event}.{name} ({type(e).__name__} {e})")
                 continue
 
             if hasattr(module.Module, "description"):

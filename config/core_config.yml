@@ -3,3 +3,4 @@ nick: mysupercoolbot
 password: myverysecrettrippassword
 server: wss://hack.chat/chat-ws
 prefix: "%" # Prefix for commands
+debug: false # Log more extensive exception information
