@@ -56,7 +56,7 @@ def load(bot, reload: bool=False) -> int:
 def find_modules() -> dict:
     module_map = {"command": {}, "message": {}, "join": {}, "leave": {}, "whisper": {}}
     for root, _, files in os.walk("usv3/events"):
-        for file in files:
+        for file in sorted(files):
             if file.endswith(".py"):
                 event = os.path.basename(root)
                 name = os.path.splitext(file)[0]
