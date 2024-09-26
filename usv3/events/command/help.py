@@ -12,12 +12,12 @@ class Module:
     async def run(bot, text, sender, trip, ulevel):
         args = text.split()
         commands = ({command: bot.cmd_map["command"][command] for command in bot.cmd_map["command"] if not bot.cmd_map["command"][command].get("admin_only", False)}
-                    if trip not in bot.admins else bot.cmd_map["command"])
+                    if trip not in bot.groups["admins"] else bot.cmd_map["command"])
         whisper_commands = ({command: bot.cmd_map["whisper"][command] for command in bot.cmd_map["whisper"] if not bot.cmd_map["whisper"][command].get("admin_only", False)}
-                            if trip not in bot.admins else bot.cmd_map["whisper"])
+                            if trip not in bot.groups["admins"] else bot.cmd_map["whisper"])
         if len(args) == 1:
             await bot.reply(sender, f"""\n\\-
-Prefix: {bot.config['prefix']}
+Prefix: {bot.prefix}
 \\-
 Chat commands: {', '.join(commands.keys())}
 \\-
@@ -38,7 +38,7 @@ Run .help <command> [whisper] for more information about a specific command.
                 desc = commands[command].get("description", "Command has no description.")
                 usage = commands[command].get("usage", "")
                 admin_only = commands[command].get("admin_only", False)
-                await bot.reply(sender, f"`{command}`\n\\-\n{'(Admin only) ' if admin_only else ''}{desc}\n\\-\nUsage: {bot.config['prefix'] if not whisper_help else ''}{command} {usage}")
+                await bot.reply(sender, f"`{command}`\n\\-\n{'(Admin only) ' if admin_only else ''}{desc}\n\\-\nUsage: {bot.prefix if not whisper_help else ''}{command} {usage}")
 
             else:
                 await bot.reply(sender, f"No such command: {command}")

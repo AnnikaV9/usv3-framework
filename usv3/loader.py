@@ -10,12 +10,13 @@ from ruamel.yaml import YAML
 
 def load(bot, reload: bool = False) -> int:
     yaml = YAML(typ="safe")
-    with (open("config/cmd_config.yml", "r") as cmd_config,
-          open("config/api_keys.yml", "r") as api_keys,
-          open("config/admins.yml", "r") as admins):
-        bot.cmd_config = yaml.load(cmd_config)
-        bot.api_keys = yaml.load(api_keys)
-        bot.admins = yaml.load(admins)
+    with open("config/extra_config.yml", "r") as extra_config:
+        extra_config = yaml.load(extra_config)
+
+    bot.cmd_config = extra_config["cmd_config"]
+    bot.api_keys = extra_config["api_keys"]
+    bot.groups = extra_config["groups"]
+    bot.prefix = extra_config["prefix"]
 
     module_map = find_modules()
     modules = {"command": {}, "message": {}, "join": {}, "leave": {}, "whisper": {}}

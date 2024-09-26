@@ -21,7 +21,8 @@ class Bot:
         self.cmd_map = {}
         self.cmd_config = {}
         self.api_keys = {}
-        self.admins = []
+        self.groups = {}
+        self.prefix = None
         usv3.loader.load(self)
 
         self.online_users = []
@@ -76,14 +77,14 @@ class Bot:
                 asyncio.create_task(self.modules["message"][handler].run(self, resp["text"], resp["nick"], trip))
 
             for command in self.modules["command"]:
-                cmds_with_args = [f"{self.config['prefix']}{command} "]
-                cmds = [f"{self.config['prefix']}{command}"]
+                cmds_with_args = [f"{self.prefix}{command} "]
+                cmds = [f"{self.prefix}{command}"]
                 if "alias" in self.cmd_map["command"][command]:
-                    cmds_with_args.append(f"{self.config['prefix']}{self.cmd_map['command'][command]['alias']} ")
-                    cmds.append(f"{self.config['prefix']}{self.cmd_map['command'][command]['alias']}")
+                    cmds_with_args.append(f"{self.prefix}{self.cmd_map['command'][command]['alias']} ")
+                    cmds.append(f"{self.prefix}{self.cmd_map['command'][command]['alias']}")
 
                 if resp["text"].startswith(tuple(cmds_with_args)) or resp["text"] in cmds:
-                    if self.cmd_map["command"][command].get("admin_only", False) and trip not in self.admins:
+                    if self.cmd_map["command"][command].get("admin_only", False) and trip not in self.groups["admins"]:
                         await self.reply(resp["nick"], "You don't have permission to use this command")
 
                     else:
@@ -104,8 +105,8 @@ class Bot:
                     cmds.append(self.cmd_map['whisper'][command]['alias'])
 
                 if text.startswith(tuple(cmds_with_args)) or text in cmds:
-                    if self.cmd_map["whisper"][command].get("admin_only", False) and trip not in self.admins:
-                        await self.send(cmd="whisper", nick=resp["from"], text="You don't have permission to use this command")
+                    if self.cmd_map["whisper"][command].get("admin_only", False) and trip not in self.groups["admins"]:
+                        await self.whisper(resp["from"], "You don't have permission to use this command")
 
                     else:
                         asyncio.create_task(usv3.runner.run(self.modules["whisper"][command].run, f"whisper.{command}", self.config["debug"], self, text, resp["from"], trip, resp["level"]))

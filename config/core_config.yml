@@ -1,6 +1,11 @@
-channel: myverysecretchannel
+# # # # # # # # # # # # # # # # # # # # # # # #
+#  Core configuration, NOT live reloadable.   #
+# # # # # # # # # # # # # # # # # # # # # # # #
+
+
+# Available as `bot.config["<option>"]`
+channel: myfavouritechannel
 nick: mysupercoolbot
 password: myverysecrettrippassword
 server: wss://hack.chat/chat-ws
-prefix: "%" # Prefix for commands
 debug: false # Log more extensive exception information

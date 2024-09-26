@@ -1,0 +1,37 @@
+# # # # # # # # # # # # # # # # # # # # # #
+#  Extra configuration, live reloadable.  #
+# # # # # # # # # # # # # # # # # # # # # #
+
+
+# Prefix for commands.
+prefix: "%"
+
+
+# API keys go here. Available as `bot.api_keys["<service>"]`
+api_keys:
+  # openai: 'sk-proj-xxxxx'
+  # openweathermap: 'xxxxx'
+
+
+# Define tripcode groups here. 'admins' is a required group.
+# Available as `bot.groups["<group>"]`
+groups:
+  admins:
+    - 111111
+    - 222222
+
+  # trusted:
+  #   - 333333
+  #   - 444444
+
+
+# Configuration options for individual modules go here. Options are
+# not isolated by module, they're only split for readability and ease
+# of use. Available as `bot.cmd_config["<module>"]["<option>"]`
+cmd_config:
+  help:
+    hide_credits: false
+
+  # module_name:
+    # option_name: value
+    # option_name: value

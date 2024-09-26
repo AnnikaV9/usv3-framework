@@ -15,7 +15,7 @@ class Module:
     async def run(bot, text, sender, trip, ulevel):
         args = text.split()
         if len(args) == 1:
-            await bot.reply(sender, f"Usage: {bot.config['prefix']}unload <event.name> [event.name] [ev...")
+            await bot.reply(sender, f"Usage: {args[0]} {Module.usage}")
             return
 
         args.pop(0)
