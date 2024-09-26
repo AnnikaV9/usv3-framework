@@ -12,7 +12,7 @@ class Module:
             if "alias" in bot.cmd_map["command"][command]:
                 aliases[command] = bot.cmd_map["command"][command]["alias"]
 
-        alias_text = f"\n\\-\n"
+        alias_text = "\n\\-\n"
         for command in aliases:
             alias_text += f"{command} - {aliases[command]}\n"
 

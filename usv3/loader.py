@@ -7,7 +7,8 @@ import importlib
 from loguru import logger
 from ruamel.yaml import YAML
 
-def load(bot, reload: bool=False) -> int:
+
+def load(bot, reload: bool = False) -> int:
     yaml = YAML(typ="safe")
     with (open("config/cmd_config.yml", "r") as cmd_config,
           open("config/api_keys.yml", "r") as api_keys,
@@ -53,6 +54,7 @@ def load(bot, reload: bool=False) -> int:
     bot.modules, bot.cmd_map = modules, module_map
     return num_modules
 
+
 def find_modules() -> dict:
     module_map = {"command": {}, "message": {}, "join": {}, "leave": {}, "whisper": {}}
     for root, _, files in os.walk("usv3/events"):
@@ -63,6 +65,7 @@ def find_modules() -> dict:
                 module_map[event][name] = {"module": f"{event}.{name}"}
 
     return module_map
+
 
 def unload(bot, modules: list) -> None:
     for module in modules:

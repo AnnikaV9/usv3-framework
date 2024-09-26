@@ -5,6 +5,7 @@
 
 import random
 
+
 class Module:
     description = "Sets a scrambled word for users to solve"
 

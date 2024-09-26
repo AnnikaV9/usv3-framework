@@ -5,6 +5,7 @@
 from typing import Callable
 from loguru import logger
 
+
 async def run(task: Callable, module: str, debug: bool, *args) -> None:
     try:
         logger.info(f"Module {module} triggered")

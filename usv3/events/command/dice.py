@@ -4,6 +4,7 @@
 
 import random
 
+
 class Module:
     description = "Rolls a dice"
 

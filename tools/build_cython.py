@@ -11,6 +11,7 @@ except ImportError:
     print("Run 'poetry install -E cython' to install dependencies required for building cython modules.")
     raise SystemExit
 
+
 def find_cython_modules() -> list:
     ext_modules = []
     for root, _, files in os.walk("usv3/events"):
@@ -19,6 +20,7 @@ def find_cython_modules() -> list:
                 ext_modules.append(Extension(f"{root.replace('/', '.')}.{file.removesuffix(".pyx")}", [os.path.join(root, file)]))
 
     return ext_modules
+
 
 setup(
     name="usv3 cython modules",

@@ -7,6 +7,7 @@
 
 import usv3.loader
 
+
 class Module:
     description = "Reloads config and all modules"
     admin_only = True

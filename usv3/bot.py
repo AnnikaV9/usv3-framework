@@ -11,6 +11,7 @@ from loguru import logger
 import usv3.loader
 import usv3.runner
 
+
 class Bot:
     def __init__(self, config: dict) -> None:
         self.ws: websockets.WebSocketClientProtocol
@@ -27,7 +28,7 @@ class Bot:
         self.online_hashes = {}
         self.online_trips = {}
 
-    async def send(self, cmd: str="chat", **kwargs) -> None:
+    async def send(self, cmd: str = "chat", **kwargs) -> None:
         await self.ws.send(json.dumps({"cmd": cmd, **kwargs}))
 
     async def main(self) -> None:

@@ -3,8 +3,6 @@
 #  secretly, use the whisper.modules module instead.
 #
 
-import usv3.loader
-
 class Module:
     description = "Lists all loaded modules"
     admin_only = True

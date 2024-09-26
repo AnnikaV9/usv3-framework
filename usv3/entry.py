@@ -5,13 +5,13 @@
 #   $ ./.venv/bin/python .venv/bin/bot
 #
 
-import traceback
 import asyncio
 import uvloop
 from ruamel.yaml import YAML
 from loguru import logger
 
 import usv3.bot
+
 
 def load_config() -> dict:
     try:
@@ -23,8 +23,10 @@ def load_config() -> dict:
         logger.error(f"Failed to read config ({type(e).__name__}: {e})")
         raise SystemExit
 
+
 global core_config
 core_config = load_config()
+
 
 def main() -> None:
     try:

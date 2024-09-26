@@ -5,6 +5,7 @@
 
 import usv3.loader
 
+
 class Module:
     description = "Unloads modules"
     usage = "<event.name> [event.name] [ev..."
