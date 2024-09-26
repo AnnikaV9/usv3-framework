@@ -79,3 +79,13 @@ await bot.reply(sender, "Hello!")
 A whisper shortcut is also provided:
 ```python
 await bot.whisper(sender, "Don't tell anyone")
+```
+
+
+## Cython modules
+usv3 supports the building and loading of cython modules. Dependencies required for this are not installed by default, they can be with `poetry install -E cython`
+
+Adding a cython module is pretty much the same as adding a pure python module, just drop the pyx file into its respective event. After that, run `poetry run build_cython` to build the module.
+
+> [!IMPORTANT]
+> Cython modules will not reflect changes after rebuilding when using the `reload` command.
