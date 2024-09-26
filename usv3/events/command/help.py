@@ -23,7 +23,7 @@ Chat commands: {', '.join(commands.keys())}
 \\-
 Whisper commands: {', '.join(whisper_commands.keys())}
 \\-
-Run .help <command> [whisper] for more information about a specific command.
+Run {bot.prefix}help <command> [whisper] for more information about a specific command.
 \\-
 {"https://github.com/AnnikaV9/usv3-framework" if not bot.cmd_config['help']['hide_credits'] else ''}""")
 
