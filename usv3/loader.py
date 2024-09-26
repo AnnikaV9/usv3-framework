@@ -57,9 +57,9 @@ def find_modules() -> dict:
     module_map = {"command": {}, "message": {}, "join": {}, "leave": {}, "whisper": {}}
     for root, _, files in os.walk("usv3/events"):
         for file in sorted(files):
-            if file.endswith(".py"):
+            if file.endswith(".py") or file.endswith(".so"):
                 event = os.path.basename(root)
-                name = os.path.splitext(file)[0]
+                name = file.split(".")[0]
                 module_map[event][name] = {"module": f"{event}.{name}"}
 
     return module_map
