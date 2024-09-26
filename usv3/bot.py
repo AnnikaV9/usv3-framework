@@ -132,7 +132,7 @@ class Bot:
         self.online_trips.pop(nick)
 
     async def handle_set(self, resp: dict) -> None:
-        logger.info(f"Joined {resp['channel']} on {self.config['server']}")
+        logger.info(f"Joined channel {resp['channel']} on {self.config['server']}")
         for user in resp["users"]:
             nick = user["nick"]
             self.online_users.append(nick)

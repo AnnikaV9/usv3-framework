@@ -30,6 +30,7 @@ core_config = load_config()
 
 def main() -> None:
     try:
+        logger.info("Starting usv3")
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
         bot = usv3.bot.Bot(core_config)
         asyncio.run(bot.main())
