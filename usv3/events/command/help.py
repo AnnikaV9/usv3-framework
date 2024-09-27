@@ -34,7 +34,7 @@ Whisper commands: {', '.join(commands['whisper'])}
 \\-
 Run {bot.prefix}help <command> [whisper] for more information about a specific command.
 \\-
-{"https://github.com/AnnikaV9/usv3-framework" if not bot.cmd_config['help']['hide_credits'] else ''}""")
+{bot.cmd_config['help'].get('footer', '')}""")
 
         else:
             command = args[1]

@@ -34,8 +34,8 @@ groups:
 # of use. Available as `bot.cmd_config["<module>"]["<option>"]`
 cmd_config:
   help:
-    hide_credits: false
+    footer: "https://github.com/AnnikaV9/usv3-framework"
 
   # module_name:
-    # option_name: value
-    # option_name: value
+    # option: value
+    # option: value
