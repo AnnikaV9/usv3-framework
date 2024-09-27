@@ -7,10 +7,16 @@
 
 import asyncio
 import uvloop
+import atexit
 from ruamel.yaml import YAML
 from loguru import logger
 
 import usv3.bot
+
+
+@atexit.register
+def exit_handler() -> None:
+    logger.info("usv3 has stopped")
 
 
 def load_config() -> dict:
