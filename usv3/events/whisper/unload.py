@@ -17,7 +17,7 @@ class Module:
     async def run(bot, text, sender, trip, ulevel):
         args = text.split()
         if len(args) == 1:
-            await bot.whisper(sender, f"\\-\nUsage: {args[0]} {Module.usage}")
+            await bot.whisper(sender, f"Usage: {args[0]} {Module.usage}")
             return
 
         args.pop(0)

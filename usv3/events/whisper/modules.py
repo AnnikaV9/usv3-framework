@@ -16,4 +16,4 @@ class Module:
             for name in bot.cmd_map[event]:
                 modules.append(f"{event}.{name}")
 
-        await bot.whisper(sender, f"\\-\nLoaded modules: {', '.join(modules)}")
+        await bot.whisper(sender, f"Loaded modules: {', '.join(modules)}")

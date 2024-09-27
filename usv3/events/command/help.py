@@ -48,7 +48,7 @@ Run {bot.prefix}help <command> [whisper] for more information about a specific c
             if command in commands["command"]:
                 desc = bot.cmd_map[event][command].get("description", "Command has no description.")
                 usage = bot.cmd_map[event][command].get("usage", "")
-                await bot.reply(sender, f"`{command}`\n\\-\n{desc}\n\\-\nUsage: {bot.prefix if not whisper_help else ''}{command} {usage}")
+                await bot.reply(sender, f"""`{command}`\n\\-\n{desc}\n\\-\nUsage: {f"/w {bot.config['nick']} {command}" if whisper_help else f"{bot.prefix}{command}"} {usage}""")
 
             else:
                 await bot.reply(sender, f"No such command: {command}")

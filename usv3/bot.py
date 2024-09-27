@@ -167,4 +167,4 @@ class Bot:
         await self.send(text=f"**@{nick}** {text}")
 
     async def whisper(self, nick: str, text: str) -> None:
-        await self.send(cmd="whisper", nick=nick, text=text)
+        await self.send(cmd="whisper", nick=nick, text=f"\\-\n{text}")

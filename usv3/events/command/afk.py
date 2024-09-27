@@ -15,12 +15,10 @@ class Module:
     async def run(bot, text, sender, trip, ulevel):
         if sender not in bot.afk_users:
             args = text.split()
-            if len(args) == 1:
-                bot.afk_users[sender] = {"reason": None, "whisper": False}
-                await bot.reply(sender, "You're now marked AFK")
-
-            else:
+            reason = None
+            if len(args) > 1:
                 args.pop(0)
                 reason = " ".join(args)
-                bot.afk_users[sender] = {"reason": reason, "whisper": False}
-                await bot.reply(sender, f"You're now marked AFK ({reason})")
+
+            bot.afk_users[sender] = {"reason": reason, "whisper": False}
+            await bot.reply(sender, f"You're now marked AFK {f'({reason})' if reason else ''}")
