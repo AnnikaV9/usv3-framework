@@ -15,6 +15,12 @@ def load(bot, reload: bool = False) -> int:
 
     bot.cmd_config = extra_config["cmd_config"]
     bot.api_keys = extra_config["api_keys"]
+    if not reload:
+        extra_config["groups"]["mods"] = []
+
+    else:
+        extra_config["groups"]["mods"] = bot.groups["mods"]
+
     bot.groups = extra_config["groups"]
     bot.prefix = extra_config["prefix"]
 
@@ -46,8 +52,8 @@ def load(bot, reload: bool = False) -> int:
             if hasattr(module.Module, "alias"):
                 module_map[event][name]["alias"] = module.Module.alias
 
-            if hasattr(module.Module, "admin_only"):
-                module_map[event][name]["admin_only"] = module.Module.admin_only
+            if hasattr(module.Module, "groups"):
+                module_map[event][name]["groups"] = module.Module.groups
 
             num_modules += 1
 

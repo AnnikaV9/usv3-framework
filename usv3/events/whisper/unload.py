@@ -11,7 +11,7 @@ import usv3.loader
 class Module:
     description = "Unloads modules"
     usage = "<event.name> [event.name] [ev..."
-    admin_only = True
+    groups = ["admins"]
 
     @staticmethod
     async def run(bot, text, sender, trip, ulevel):

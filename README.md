@@ -15,11 +15,11 @@ usv3 can be extended by adding modules that get triggered on various events.
 A basic module for the command event looks like this:
 ```python
 class Module:
-    # Metadata, not required. Can have the following:
+    # Metadata, all optional. Can have the following:
     # - description
     # - usage
     # - alias
-    # - admin_only (Set to anything other than False)
+    # - groups (list of groups that can access the command)
     description = "Your command's help text"
     usage = "[args1], [args2], [args3]..."
 
@@ -48,6 +48,8 @@ Different events take different arguments for `run()`:
 |join|bot, sender, hash, trip|
 |leave|bot, sender|
 |whisper|bot, text, sender, trip, ulevel|
+
+A few example modules are shipped with the framework. You can use them as a reference to create your own.
 
 After creating a module, place it in its respective event in [usv3/events](usv3/events). The module will be found and loaded automatically. If your module has any dependencies, add them to [pyproject.toml](pyproject.toml) under `tool.poetry.group.cmd.dependencies` and run `poetry update`
 

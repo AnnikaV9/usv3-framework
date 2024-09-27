@@ -84,7 +84,13 @@ class Bot:
                     cmds.append(f"{self.prefix}{self.cmd_map['command'][command]['alias']}")
 
                 if resp["text"].startswith(tuple(cmds_with_args)) or resp["text"] in cmds:
-                    if self.cmd_map["command"][command].get("admin_only", False) and trip not in self.groups["admins"]:
+                    groups = self.cmd_map["command"][command].get("groups", [])
+                    master_list = []
+                    for group in groups:
+                        if group in self.groups:
+                            master_list.extend(self.groups[group])
+
+                    if trip not in master_list and len(groups) > 0:
                         await self.reply(resp["nick"], "You don't have permission to use this command")
 
                     else:
@@ -105,7 +111,13 @@ class Bot:
                     cmds.append(self.cmd_map['whisper'][command]['alias'])
 
                 if text.startswith(tuple(cmds_with_args)) or text in cmds:
-                    if self.cmd_map["whisper"][command].get("admin_only", False) and trip not in self.groups["admins"]:
+                    groups = self.cmd_map["whisper"][command].get("groups", [])
+                    master_list = []
+                    for group in groups:
+                        if group in self.groups:
+                            master_list.extend(self.groups[group])
+
+                    if trip not in master_list and len(groups) > 0:
                         await self.whisper(resp["from"], "You don't have permission to use this command")
 
                     else:
@@ -120,6 +132,9 @@ class Bot:
         self.online_users.append(nick)
         self.online_hashes[nick] = resp["hash"]
         self.online_trips[nick] = trip
+        if resp["level"] >= 999999:
+            self.groups["mods"].append(trip)
+
         for handler in self.modules["join"]:
             asyncio.create_task(usv3.runner.run(self.modules["join"][handler].run, f"join.{handler}", self.config["debug"], self, resp["nick"], resp["hash"], resp["trip"]))
 
@@ -127,6 +142,9 @@ class Bot:
         nick = resp["nick"]
         for handler in self.modules["leave"]:
             asyncio.create_task(usv3.runner.run(self.modules["leave"][handler].run, f"leave.{handler}", self.config["debug"], self, resp["nick"]))
+
+        if self.online_trips[nick] in self.groups["mods"]:
+            self.groups["mods"].remove(self.online_trips[nick])
 
         self.online_users.remove(nick)
         self.online_hashes.pop(nick)
@@ -139,6 +157,8 @@ class Bot:
             self.online_users.append(nick)
             self.online_hashes[nick] = user["hash"]
             self.online_trips[nick] = user["trip"] if user["trip"] != "" else None
+            if user["level"] >= 999999:
+                self.groups["mods"].append(user["trip"])
 
     async def handle_warn(self, resp: dict) -> None:
         logger.warning(f"Server sent a warn: {resp['text']}")

@@ -8,7 +8,7 @@ import usv3.loader
 
 class Module:
     description = "Reloads config and all modules"
-    admin_only = True
+    groups = ["admins"]
 
     @staticmethod
     async def run(bot, text, sender, trip, ulevel):

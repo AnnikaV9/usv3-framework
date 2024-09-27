@@ -5,7 +5,7 @@
 
 class Module:
     description = "Lists all loaded modules"
-    admin_only = True
+    groups = ["admins"]
 
     @staticmethod
     async def run(bot, text, sender, trip, ulevel):

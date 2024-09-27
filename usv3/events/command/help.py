@@ -11,17 +11,26 @@ class Module:
     @staticmethod
     async def run(bot, text, sender, trip, ulevel):
         args = text.split()
-        commands = ({command: bot.cmd_map["command"][command] for command in bot.cmd_map["command"] if not bot.cmd_map["command"][command].get("admin_only", False)}
-                    if trip not in bot.groups["admins"] else bot.cmd_map["command"])
-        whisper_commands = ({command: bot.cmd_map["whisper"][command] for command in bot.cmd_map["whisper"] if not bot.cmd_map["whisper"][command].get("admin_only", False)}
-                            if trip not in bot.groups["admins"] else bot.cmd_map["whisper"])
+        commands = {"command": [], "whisper": []}
+        groups = []
+        for group in bot.groups:
+            if trip in bot.groups[group]:
+                groups.append(group)
+
+        for event in ("command", "whisper"):
+            for command in bot.cmd_map[event]:
+                if "groups" in bot.cmd_map[event][command]:
+                    if any(group in bot.cmd_map[event][command]["groups"] for group in groups):
+                        commands[event].append(command)
+
+                else:
+                    commands[event].append(command)
+
         if len(args) == 1:
             await bot.reply(sender, f"""\n\\-
-Prefix: {bot.prefix}
+Chat commands: {', '.join(commands['command'])}
 \\-
-Chat commands: {', '.join(commands.keys())}
-\\-
-Whisper commands: {', '.join(whisper_commands.keys())}
+Whisper commands: {', '.join(commands['whisper'])}
 \\-
 Run {bot.prefix}help <command> [whisper] for more information about a specific command.
 \\-
@@ -30,15 +39,16 @@ Run {bot.prefix}help <command> [whisper] for more information about a specific c
         else:
             command = args[1]
             whisper_help = False
+            event = "command"
             if len(args) > 2 and args[2] == "whisper":
-                commands = whisper_commands
+                commands["command"] = commands["whisper"]
                 whisper_help = True
+                event = "whisper"
 
-            if command in commands.keys():
-                desc = commands[command].get("description", "Command has no description.")
-                usage = commands[command].get("usage", "")
-                admin_only = commands[command].get("admin_only", False)
-                await bot.reply(sender, f"`{command}`\n\\-\n{'(Admin only) ' if admin_only else ''}{desc}\n\\-\nUsage: {bot.prefix if not whisper_help else ''}{command} {usage}")
+            if command in commands["command"]:
+                desc = bot.cmd_map[event][command].get("description", "Command has no description.")
+                usage = bot.cmd_map[event][command].get("usage", "")
+                await bot.reply(sender, f"`{command}`\n\\-\n{desc}\n\\-\nUsage: {bot.prefix if not whisper_help else ''}{command} {usage}")
 
             else:
                 await bot.reply(sender, f"No such command: {command}")

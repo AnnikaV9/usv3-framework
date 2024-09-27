@@ -14,6 +14,10 @@ api_keys:
 
 
 # Define tripcode groups here. 'admins' is a required group.
+# There is a special group called 'mods' that is automatically
+# managed by the bot, containing all moderators in the channel.
+# You can limit access to commands by group using the 'groups'
+# option in the command's module metadata.
 # Available as `bot.groups["<group>"]`
 groups:
   admins:
@@ -26,7 +30,7 @@ groups:
 
 
 # Configuration options for individual modules go here. Options are
-# not isolated by module, they're only split for readability and ease
+# NOT isolated by module, they're only split for readability and ease
 # of use. Available as `bot.cmd_config["<module>"]["<option>"]`
 cmd_config:
   help:
