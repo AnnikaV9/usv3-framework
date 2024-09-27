@@ -1,7 +1,12 @@
 *.py             text diff=python
+*.pyx            text diff=python
 *.yml            text
 *.gitattributes  text
 *.gitignore      text
 *.editorconfig   text
+*.flake8         text
 *.md             text diff=markdown
+*.txt            text
+*.json           text
+*.toml           text
 LICENSE          text
