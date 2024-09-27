@@ -61,7 +61,7 @@ The `reload` command live reloads all loaded modules and any new modules that ha
 ## Replying to the server
 `bot.send()` can be used to reply to the server. It's defined in the core framework as:
 ```python
-async def send(self, cmd: str="chat", **kwargs) -> None:
+async def send(self, cmd: str = "chat", **kwargs) -> None:
     await self.ws.send(json.dumps({"cmd": cmd, **kwargs}))
 ```
 To send a chat message:
