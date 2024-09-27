@@ -55,7 +55,7 @@ After creating a module, place it in its respective event in [usv3/events](usv3/
 
 For chat/whisper commands, the name of the module will be the command that calls it. You can add an alias for each one if a shorter alternate command is needed.
 
-The `reload` command live reloads all loaded modules and any new modules that have been added. Note that this will re-run `on_load()` in all modules that have it. All configuration files except [config/core_config.yml](config/core_config.yml) will be reloaded.
+The `reload` command live reloads all loaded modules and any new modules that have been added. Note that this will re-run `on_load()` in all modules that have it. The configuration file [config/extra_config.yml](config/extra_config.yml) will also be reloaded.
 
 
 ## Replying to the server
