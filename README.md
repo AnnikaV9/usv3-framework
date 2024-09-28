@@ -6,7 +6,7 @@ An extensible bot framework for [hack.chat](https://hack.chat)
 usv3 requires >= Python 3.10 and [poetry](https://python-poetry.org/)
 1. Set up the project with `poetry install`
 3. Configure the bot in [config](config)
-4. Run the bot with `poetry run bot`
+4. Run the bot with `poetry run usv3`
 
 
 ## Adding your own stuff
@@ -89,3 +89,31 @@ Adding a cython module is pretty much the same as adding a pure python module, j
 
 > [!IMPORTANT]
 > Unlike pure python modules, cython modules will not reflect changes after rebuilding when using the `reload` command. You will have to restart the bot to load the changes.
+
+
+## Systemd
+If you want to run usv3 as a systemd service, here's a sample unit file:
+```ini
+# usv3.service
+
+[Unit]
+Description=usv3
+After=network-online.target
+
+[Service]
+ExecStart=/path/to/poetry run -n usv3
+ExecStartPre=/path/to/poetry check -n --lock
+WorkingDirectory=/home/<user>/path/to/usv3/directory
+Restart=always
+RestartSec=60
+Type=simple
+
+[Install]
+WantedBy=default.target
+```
+Edit to match your setup and place it in `~/.config/systemd/user/`
+
+Run `systemctl --user daemon-reload` and `systemctl --user enable --now usv3.service` to start and enable the service.
+
+> [!NOTE]
+> If you have issues with usv3 being killed when you log out, enable lingering with `sudo loginctl enable-linger $USER`

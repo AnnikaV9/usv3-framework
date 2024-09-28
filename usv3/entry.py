@@ -8,6 +8,7 @@
 import asyncio
 import uvloop
 import atexit
+import importlib.metadata
 from ruamel.yaml import YAML
 from loguru import logger
 
@@ -36,7 +37,7 @@ core_config = load_config()
 
 def main() -> None:
     try:
-        logger.info("Starting usv3")
+        logger.info(f"Starting usv3 ({importlib.metadata.version('usv3')})")
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
         bot = usv3.bot.Bot(core_config)
         asyncio.run(bot.main())

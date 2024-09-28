@@ -21,7 +21,7 @@ cython = ["cython", "setuptools"]
 dev = ["flake8"]
 
 [tool.poetry.scripts]
-bot = "usv3.entry:main"
+usv3 = "usv3.entry:main"
 build_cython = "tools.tasks:build_cython"
 
 [tool.poetry.group.cmd.dependencies]
