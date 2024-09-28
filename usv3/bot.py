@@ -183,7 +183,7 @@ class Bot:
             if user["level"] >= 999999:
                 self.groups["mods"].append(user["trip"])
 
-        logger.success(f"usv3 is now live!")
+        logger.success("usv3 is now live!")
 
     async def handle_warn(self, resp: dict) -> None:
         logger.warning(f"Server sent a warn: {resp['text']}")
