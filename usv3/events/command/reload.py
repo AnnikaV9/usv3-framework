@@ -12,4 +12,5 @@ class Module:
 
     @staticmethod
     async def run(bot, text, sender, trip, ulevel):
-        await bot.reply(sender, f"Reloaded config and {usv3.loader.load(bot, reload=True)} modules")
+        succeeded, failed = usv3.loader.load(bot, reload=True)
+        await bot.reply(sender, f"Reloaded config and modules ({succeeded} succeeded, {failed} failed)")

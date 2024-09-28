@@ -7,6 +7,10 @@
 prefix: "%"
 
 
+# Reconnect to the server on disconnect.
+reconnect: true
+
+
 # API keys go here. Available as `bot.api_keys["<service>"]`
 api_keys:
   # openai: 'sk-proj-xxxxx'

@@ -8,11 +8,16 @@ from loguru import logger
 from ruamel.yaml import YAML
 
 
-def load(bot, reload: bool = False) -> int:
+def load(bot, reload: bool = False) -> tuple[int, int]:
+    logger.info(f"{'Reloading' if reload else 'Loading'} configuration and modules")
     load_config(bot, reload)
-    module_map = find_modules()
+    return load_modules(bot, reload)
+
+
+def load_modules(bot, reload: bool) -> tuple[int, int]:
+    module_map, num_modules = find_modules()
     modules = {"command": {}, "message": {}, "join": {}, "leave": {}, "whisper": {}}
-    num_modules = 0
+    failed = 0
     for event in module_map:
         for name in module_map[event]:
             try:
@@ -27,6 +32,7 @@ def load(bot, reload: bool = False) -> int:
             except Exception as e:
                 exc_logger = logger.exception if bot.config["debug"] else logger.error
                 exc_logger(f"Failed to load module {event}.{name} ({type(e).__name__} {e})")
+                failed += 1
                 continue
 
             if hasattr(module.Module, "description"):
@@ -41,11 +47,10 @@ def load(bot, reload: bool = False) -> int:
             if hasattr(module.Module, "groups"):
                 module_map[event][name]["groups"] = module.Module.groups
 
-            num_modules += 1
-
-    logger.info(f"Loaded {num_modules} modules {'(reloaded)' if reload else ''}")
+    exc_logger = logger.error if failed > 0 else logger.success
+    exc_logger(f"{'Reloaded' if reload else 'Loaded'} modules ({num_modules} succeeded, {failed} failed)")
     bot.modules, bot.cmd_map = modules, module_map
-    return num_modules
+    return num_modules, failed
 
 
 def load_config(bot, reload: bool) -> None:
@@ -55,15 +60,19 @@ def load_config(bot, reload: bool) -> None:
 
     bot.cmd_config = extra_config["cmd_config"]
     bot.api_keys = extra_config["api_keys"]
+    bot.reconnect = extra_config["reconnect"]
     extra_config["groups"]["mods"] = []
     if reload:
         extra_config["groups"]["mods"].extend(bot.groups["mods"])
 
     bot.groups = extra_config["groups"]
     bot.prefix = extra_config["prefix"]
+    logger.success(f"{'Reloaded' if reload else 'Loaded'} config/extra_config.yml")
 
 
-def find_modules() -> dict:
+def find_modules() -> tuple[dict, int]:
+    logger.info("Searching for modules")
+    num_modules = 0
     module_map = {"command": {}, "message": {}, "join": {}, "leave": {}, "whisper": {}}
     for root, _, files in os.walk("usv3/events"):
         for file in sorted(files):
@@ -71,8 +80,10 @@ def find_modules() -> dict:
                 event = os.path.basename(root)
                 name = file.split(".")[0]
                 module_map[event][name] = {"module": f"{event}.{name}"}
+                num_modules += 1
 
-    return module_map
+    logger.info(f"Found {num_modules} modules")
+    return module_map, num_modules
 
 
 def unload(bot, modules: list) -> None:
@@ -81,3 +92,10 @@ def unload(bot, modules: list) -> None:
         del bot.modules[event][name]
         del bot.cmd_map[event][name]
         logger.info(f"Unloaded module {event}.{name}")
+
+
+def reinitialize(bot) -> None:
+    for event in bot.modules:
+        for module in bot.modules[event]:
+            if hasattr(bot.modules[event][module], "on_load"):
+                bot.modules[event][module].on_load(bot)

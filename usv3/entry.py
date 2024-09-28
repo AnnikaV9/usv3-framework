@@ -42,8 +42,9 @@ def main() -> None:
         asyncio.run(bot.main())
 
     except KeyboardInterrupt:
+        logger.warning("Received KeyboardInterrupt")
         raise SystemExit
 
     except Exception as e:
         exc_logger = logger.exception if core_config["debug"] else logger.error
-        exc_logger(f"Bot crashed on fatal error ({type(e).__name__}: {e})")
+        exc_logger(f"usv3 crashed due to a fatal error ({type(e).__name__}: {e})")

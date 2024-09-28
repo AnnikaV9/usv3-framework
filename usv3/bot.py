@@ -5,7 +5,8 @@
 
 import json
 import asyncio
-import websockets
+import websockets.asyncio.client
+import websockets.exceptions
 from loguru import logger
 
 import usv3.loader
@@ -14,8 +15,6 @@ import usv3.runner
 
 class Bot:
     def __init__(self, config: dict) -> None:
-        self.ws: websockets.WebSocketClientProtocol
-
         self.config = config
         self.modules = {}
         self.cmd_map = {}
@@ -23,20 +22,44 @@ class Bot:
         self.api_keys = {}
         self.groups = {}
         self.prefix = None
+        self.reconnect = None
         usv3.loader.load(self)
 
         self.online_users = []
         self.online_hashes = {}
         self.online_trips = {}
 
+    def reset_state(self) -> None:
+        self.online_users = []
+        self.online_hashes = {}
+        self.online_trips = {}
+        self.groups["mods"] = []
+
     async def send(self, cmd: str = "chat", **kwargs) -> None:
         await self.ws.send(json.dumps({"cmd": cmd, **kwargs}))
 
     async def main(self) -> None:
-        async with websockets.connect(self.config["server"], ping_timeout=None) as ws:
-            self.ws = ws
-            await self.send(cmd="join", nick=f"{self.config['nick']}#{self.config['password']}", channel=self.config["channel"])
-            await asyncio.gather(self.ping_loop(), self.receive_loop())
+        logger.info(f"Waiting for connection from {self.config['server']}")
+        async for ws in websockets.asyncio.client.connect(self.config["server"], ping_timeout=None):
+            logger.success(f"Connected to {self.config['server']}")
+            try:
+                self.ws = ws
+                await self.send(cmd="join", nick=f"{self.config['nick']}#{self.config['password']}", channel=self.config["channel"])
+                loops = asyncio.gather(self.ping_loop(), self.receive_loop())
+                await loops
+
+            except websockets.exceptions.ConnectionClosedError:
+                if self.reconnect:
+                    logger.error("Connection closed, resetting state")
+                    if "loops" in locals():
+                        loops.cancel()
+
+                    self.reset_state()
+                    usv3.loader.reinitialize(self)
+                    logger.info(f"Waiting for connection from {self.config['server']}")
+                    continue
+
+                raise Exception("Connection closed, reconnect disabled")
 
     async def ping_loop(self) -> None:
         while True:
@@ -151,7 +174,7 @@ class Bot:
         self.online_trips.pop(nick)
 
     async def handle_set(self, resp: dict) -> None:
-        logger.info(f"Joined channel {resp['channel']} on {self.config['server']}")
+        logger.success(f"Joined channel: {resp['channel']}")
         for user in resp["users"]:
             nick = user["nick"]
             self.online_users.append(nick)
@@ -159,6 +182,8 @@ class Bot:
             self.online_trips[nick] = user["trip"] if user["trip"] != "" else None
             if user["level"] >= 999999:
                 self.groups["mods"].append(user["trip"])
+
+        logger.success(f"usv3 is now live!")
 
     async def handle_warn(self, resp: dict) -> None:
         logger.warning(f"Server sent a warn: {resp['text']}")
