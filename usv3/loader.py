@@ -9,21 +9,7 @@ from ruamel.yaml import YAML
 
 
 def load(bot, reload: bool = False) -> int:
-    yaml = YAML(typ="safe")
-    with open("config/extra_config.yml", "r") as extra_config:
-        extra_config = yaml.load(extra_config)
-
-    bot.cmd_config = extra_config["cmd_config"]
-    bot.api_keys = extra_config["api_keys"]
-    if not reload:
-        extra_config["groups"]["mods"] = []
-
-    else:
-        extra_config["groups"]["mods"] = bot.groups["mods"]
-
-    bot.groups = extra_config["groups"]
-    bot.prefix = extra_config["prefix"]
-
+    load_config(bot, reload)
     module_map = find_modules()
     modules = {"command": {}, "message": {}, "join": {}, "leave": {}, "whisper": {}}
     num_modules = 0
@@ -60,6 +46,21 @@ def load(bot, reload: bool = False) -> int:
     logger.info(f"Loaded {num_modules} modules {'(reloaded)' if reload else ''}")
     bot.modules, bot.cmd_map = modules, module_map
     return num_modules
+
+
+def load_config(bot, reload: bool) -> None:
+    yaml = YAML(typ="safe")
+    with open("config/extra_config.yml", "r") as extra_config:
+        extra_config = yaml.load(extra_config)
+
+    bot.cmd_config = extra_config["cmd_config"]
+    bot.api_keys = extra_config["api_keys"]
+    extra_config["groups"]["mods"] = []
+    if reload:
+        extra_config["groups"]["mods"].extend(bot.groups["mods"])
+
+    bot.groups = extra_config["groups"]
+    bot.prefix = extra_config["prefix"]
 
 
 def find_modules() -> dict:
