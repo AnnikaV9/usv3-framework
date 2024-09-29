@@ -8,17 +8,17 @@ class Module:
     usage = "[reason]"
 
     @staticmethod
-    def on_load(bot):
-        bot.afk_users = {}
+    def on_load(bot, namespace):
+        namespace.afk_users = {}
 
     @staticmethod
-    async def run(bot, text, sender, trip, ulevel):
-        if sender not in bot.afk_users:
+    async def run(bot, namespace, text, sender, trip, ulevel):
+        if sender not in namespace.afk_users:
             args = text.split()
             reason = None
             if len(args) > 1:
                 args.pop(0)
                 reason = " ".join(args)
 
-            bot.afk_users[sender] = {"reason": reason, "whisper": False}
+            namespace.afk_users[sender] = {"reason": reason, "whisper": True}
             await bot.reply(sender, f"You're now marked AFK {f'({reason})' if reason else ''}")

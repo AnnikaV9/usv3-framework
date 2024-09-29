@@ -24,7 +24,7 @@ class Module:
     usage = "[args1], [args2], [args3]..."
 
     @staticmethod
-    async def run(bot, text, sender, trip, ulevel):
+    async def run(bot, namespace, text, sender, trip, ulevel):
 ```
 If your module needs to do stuff on load, use `on_load()`:
 ```python
@@ -32,26 +32,29 @@ class Module:
     ...metadata...
 
     @staticmethod
-    def on_load(bot):
-        bot.myglobalvar = 1
+    def on_load(bot, namespace):
+        namespace.mylist = []
         # Whatever else that needs to be done
 
     @staticmethod
-    async def run(bot, text, sender, trip, ulevel):
+    async def run(bot, namespace, text, sender, trip, ulevel):
 ```
+
+A namespace is created for each module. This can be used to store data that needs to be accessed later or shared between different modules. Within the same module, this is available as `namespace`. A different module's namespace can be accessed with `bot.namespaces.<event>.<name>`
+
 
 Different events take different arguments for `run()`:
 |Event|Arguments|
 |--|--|
-|command|bot, text, sender, trip, ulevel|
-|message|bot, text, sender, trip|
-|join|bot, sender, hash, trip|
-|leave|bot, sender|
-|whisper|bot, text, sender, trip, ulevel|
+|command|bot, namespace, text, sender, trip, ulevel|
+|message|bot, namespace, text, sender, trip|
+|join|bot, namespace, sender, hash, trip|
+|leave|bot, namespace, sender|
+|whisper|bot, namespace, text, sender, trip, ulevel|
 
 A few example modules are shipped with the framework. You can use them as a reference to create your own.
 
-After creating a module, place it in its respective event in [usv3/events](usv3/events). The module will be found and loaded automatically. If your module has any dependencies, add them to [pyproject.toml](pyproject.toml) under `tool.poetry.group.cmd.dependencies` and run `poetry update`
+After creating a module, place it in its respective event in [usv3/events](usv3/events). The module will be found and loaded automatically. If your module has any dependencies, add them to [pyproject.toml](pyproject.toml) under `tool.poetry.group.cmd.dependencies` and run `poetry update`.
 
 For chat/whisper commands, the name of the module will be the command that calls it. You can add an alias for each one if a shorter alternate command is needed.
 
@@ -111,11 +114,11 @@ Type=simple
 [Install]
 WantedBy=default.target
 ```
-Edit to match your setup and place it in `~/.config/systemd/user/`
+Edit to match your setup and place it in `~/.config/systemd/user/`.
 
 Run `systemctl --user daemon-reload` and `systemctl --user enable --now usv3` to start and enable the service.
 
 Once the service is up, you can run `systemctl --user status usv3` or `journalctl --user -e -u usv3` to view resource usage or logs.
 
 > [!NOTE]
-> If you have issues with usv3 being killed when you log out, enable lingering with `sudo loginctl enable-linger $USER`
+> If you have issues with usv3 being killed when you log out, enable lingering with `sudo loginctl enable-linger $USER`.

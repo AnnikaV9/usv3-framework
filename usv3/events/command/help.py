@@ -9,7 +9,7 @@ class Module:
     alias = "h"
 
     @staticmethod
-    async def run(bot, text, sender, trip, ulevel):
+    async def run(bot, namespace, text, sender, trip, ulevel):
         args = text.split()
         commands = {"command": [], "whisper": []}
         groups = []

@@ -4,6 +4,7 @@
 
 import os
 import importlib
+from types import SimpleNamespace
 from loguru import logger
 from ruamel.yaml import YAML
 
@@ -17,17 +18,19 @@ def load(bot, reload: bool = False) -> tuple[int, int]:
 def load_modules(bot, reload: bool) -> tuple[int, int]:
     module_map, num_modules = find_modules()
     modules = {"command": {}, "message": {}, "join": {}, "leave": {}, "whisper": {}}
+    bot.namespaces = SimpleNamespace()
     failed = 0
     for event in module_map:
+        setattr(bot.namespaces, event, SimpleNamespace())
         for name in module_map[event]:
             try:
                 module = importlib.import_module(f"usv3.events.{module_map[event][name]['module']}")
                 if reload:
                     importlib.reload(module)
 
-                modules[event][name] = module.Module
+                setattr(getattr(bot.namespaces, event), name, SimpleNamespace())
                 if hasattr(module.Module, "on_load"):
-                    module.Module.on_load(bot)
+                    module.Module.on_load(bot, getattr(getattr(bot.namespaces, event), name))
 
             except Exception as e:
                 exc_logger = logger.exception if bot.config["debug"] else logger.error
@@ -35,6 +38,7 @@ def load_modules(bot, reload: bool) -> tuple[int, int]:
                 failed += 1
                 continue
 
+            modules[event][name] = module.Module
             if hasattr(module.Module, "description"):
                 module_map[event][name]["description"] = module.Module.description
 
@@ -99,3 +103,5 @@ def reinitialize(bot) -> None:
         for module in bot.modules[event]:
             if hasattr(bot.modules[event][module], "on_load"):
                 bot.modules[event][module].on_load(bot)
+
+            setattr(getattr(bot.namespaces, event), module, SimpleNamespace())

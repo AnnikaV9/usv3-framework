@@ -14,7 +14,7 @@ class Module:
     groups = ["admins"]
 
     @staticmethod
-    async def run(bot, text, sender, trip, ulevel):
+    async def run(bot, namespace, text, sender, trip, ulevel):
         args = text.split()
         if len(args) == 1:
             await bot.whisper(sender, f"Usage: {args[0]} {Module.usage}")

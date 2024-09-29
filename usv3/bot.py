@@ -7,6 +7,7 @@ import json
 import asyncio
 import websockets.asyncio.client
 import websockets.exceptions
+from types import SimpleNamespace
 from loguru import logger
 
 import usv3.loader
@@ -16,13 +17,14 @@ import usv3.runner
 class Bot:
     def __init__(self, config: dict) -> None:
         self.config = config
-        self.modules = {}
-        self.cmd_map = {}
-        self.cmd_config = {}
-        self.api_keys = {}
-        self.groups = {}
-        self.prefix = None
-        self.reconnect = None
+        self.modules: dict
+        self.cmd_map: dict
+        self.cmd_config: dict
+        self.api_keys: dict
+        self.groups: dict
+        self.prefix: str
+        self.reconnect: bool
+        self.namespaces: SimpleNamespace
         usv3.loader.load(self)
 
         self.online_users = []
@@ -34,6 +36,10 @@ class Bot:
         self.online_hashes = {}
         self.online_trips = {}
         self.groups["mods"] = []
+        usv3.loader.reinitialize(self)
+
+    def get_namespace(self, event: str, name: str) -> SimpleNamespace:
+        return getattr(getattr(self.namespaces, event), name)
 
     async def send(self, cmd: str = "chat", **kwargs) -> None:
         await self.ws.send(json.dumps({"cmd": cmd, **kwargs}))
@@ -55,7 +61,6 @@ class Bot:
                         loops.cancel()
 
                     self.reset_state()
-                    usv3.loader.reinitialize(self)
                     logger.info(f"Waiting for connection from {self.config['server']}")
                     continue
 
@@ -97,7 +102,7 @@ class Bot:
 
         if resp["nick"] != self.config["nick"]:
             for handler in self.modules["message"]:
-                asyncio.create_task(self.modules["message"][handler].run(self, resp["text"], resp["nick"], trip))
+                asyncio.create_task(self.modules["message"][handler].run(self, self.get_namespace("message", handler), resp["text"], resp["nick"], trip))
 
             for command in self.modules["command"]:
                 cmds_with_args = [f"{self.prefix}{command} "]
@@ -117,7 +122,7 @@ class Bot:
                         await self.reply(resp["nick"], "You don't have permission to use this command")
 
                     else:
-                        asyncio.create_task(usv3.runner.run(self.modules["command"][command].run, f"command.{command}", self.config["debug"], self, resp["text"], resp["nick"], trip, resp["level"]))
+                        asyncio.create_task(usv3.runner.run(self.modules["command"][command].run, f"command.{command}", self.config["debug"], self, self.get_namespace("command", command), resp["text"], resp["nick"], trip, resp["level"]))
 
     async def handle_whisper(self, resp: dict) -> None:
         trip = resp.get("trip")
@@ -144,7 +149,7 @@ class Bot:
                         await self.whisper(resp["from"], "You don't have permission to use this command")
 
                     else:
-                        asyncio.create_task(usv3.runner.run(self.modules["whisper"][command].run, f"whisper.{command}", self.config["debug"], self, text, resp["from"], trip, resp["level"]))
+                        asyncio.create_task(usv3.runner.run(self.modules["whisper"][command].run, f"whisper.{command}", self.config["debug"], self, self.get_namespace("whisper", command), text, resp["from"], trip, resp["level"]))
 
     async def handle_join(self, resp: dict) -> None:
         trip = resp.get("trip")
@@ -159,12 +164,12 @@ class Bot:
             self.groups["mods"].append(trip)
 
         for handler in self.modules["join"]:
-            asyncio.create_task(usv3.runner.run(self.modules["join"][handler].run, f"join.{handler}", self.config["debug"], self, resp["nick"], resp["hash"], resp["trip"]))
+            asyncio.create_task(usv3.runner.run(self.modules["join"][handler].run, f"join.{handler}", self.config["debug"], self, self.get_namespace("join", handler), resp["nick"], resp["hash"], resp["trip"]))
 
     async def handle_leave(self, resp: dict) -> None:
         nick = resp["nick"]
         for handler in self.modules["leave"]:
-            asyncio.create_task(usv3.runner.run(self.modules["leave"][handler].run, f"leave.{handler}", self.config["debug"], self, resp["nick"]))
+            asyncio.create_task(usv3.runner.run(self.modules["leave"][handler].run, f"leave.{handler}", self.config["debug"], self, self.get_namespace("leave", handler), resp["nick"]))
 
         if self.online_trips[nick] in self.groups["mods"]:
             self.groups["mods"].remove(self.online_trips[nick])

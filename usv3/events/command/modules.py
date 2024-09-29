@@ -8,7 +8,7 @@ class Module:
     groups = ["admins"]
 
     @staticmethod
-    async def run(bot, text, sender, trip, ulevel):
+    async def run(bot, namespace, text, sender, trip, ulevel):
         modules = []
         for event in bot.cmd_map:
             for name in bot.cmd_map[event]:

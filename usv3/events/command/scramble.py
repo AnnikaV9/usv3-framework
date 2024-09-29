@@ -10,14 +10,14 @@ class Module:
     description = "Sets a scrambled word for users to solve"
 
     @staticmethod
-    def on_load(bot):
-        bot.scrambled_word = None
+    def on_load(bot, namespace):
+        namespace.solution = None
         with open("assets/words.txt", "r") as wordlist:
-            bot.words = wordlist.read()
+            namespace.wordlist = wordlist.read()
 
     @staticmethod
-    async def run(bot, text, sender, trip, ulevel):
-        word = random.choice(bot.words.splitlines())
+    async def run(bot, namespace, text, sender, trip, ulevel):
+        word = random.choice(namespace.wordlist.splitlines())
         scrambled_word = "".join(random.sample(word, len(word)))
-        bot.scrambled_word = word
+        namespace.solution =  word
         await bot.send(text=f"**Scramble started:** {scrambled_word}")

@@ -5,7 +5,8 @@
 
 class Module:
     @staticmethod
-    async def run(bot, text, sender, trip):
-        if bot.scrambled_word and bot.scrambled_word.lower() in text.lower():
-            await bot.send(text=f"**@{sender}** solved the scramble! The word was: {bot.scrambled_word}")
-            bot.scrambled_word = None
+    async def run(bot, namespace, text, sender, trip):
+        solution = bot.namespaces.command.scramble.solution
+        if solution and solution.lower() in text.lower():
+            await bot.send(text=f"**@{sender}** solved the scramble! The word was: {solution}")
+            bot.namespaces.command.scramble.solution = None
