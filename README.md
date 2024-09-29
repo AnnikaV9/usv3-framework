@@ -40,22 +40,29 @@ class Module:
     async def run(bot, namespace, text, sender, trip, ulevel):
 ```
 
-A namespace is created for each module. This can be used as a safe place to store data that needs to be accessed later or shared between different modules. Within the same module, this is available as `namespace`. A different module's namespace can be accessed with `bot.namespaces.<event>.<name>`
-
-
 Different events take different arguments for `run()`:
-|Event|Arguments|
+|Events|Arguments|
 |--|--|
-|command|bot, namespace, text, sender, trip, ulevel|
-|message|bot, namespace, text, sender, trip|
-|join|bot, namespace, sender, hash, trip|
-|leave|bot, namespace, sender|
-|whisper|bot, namespace, text, sender, trip, ulevel|
+|command, message, whisper|bot, namespace, text, sender, trip, ulevel|
+|join, leave|bot, namespace, sender, hash, trip|
+
+Here's a breakdown of all the arguments:
+|Argument|Description|
+|--|--|
+|bot|Main usv3 instance, see warning below.|
+|namespace|Module's namespace.|
+|text|Message text **without** the command stripped.|
+|sender|Sender's nickname.|
+|hash|Sender's connection hash.|
+|trip|Sender's tripcode.|
+|ulevel|Sender's user level. See [hack-chat/main/commands/utility/_UAC.js](https://github.com/hack-chat/main/blob/752d172dd58022f5c65dc8d002ebc9da71949b1d/commands/utility/_UAC.js#L51-L60)|
 
 > [!WARNING]
 > The `bot` object is the main usv3 instance, messing with its attributes can result in crashes. Safe methods you can call from `bot` are `send()`, `reply()` and `whisper()`. These are documented in the next section.
 
-A few example modules are shipped with the framework. You can use them as a reference to create your own.
+A namespace is created for each module. This can be used as a safe place to store data that needs to be accessed later or shared between different modules. Within the same module, this is available as `namespace`. A different module's namespace can be accessed with `bot.namespaces.<event>.<name>`.
+
+A few example modules are shipped with the framework. You can use them as reference when creating your own.
 
 After creating a module, place it in its respective event in [usv3/events](usv3/events). The module will be found and loaded automatically. If your module has any dependencies, add them to [pyproject.toml](pyproject.toml) under `tool.poetry.group.cmd.dependencies` and run `poetry update`.
 

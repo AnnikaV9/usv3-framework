@@ -104,7 +104,7 @@ class Bot:
             for handler in self.modules["message"]:
                 asyncio.create_task(
                     usv3.runner.run(
-                        self.modules["message"][handler].run, f"message.{handler}", self.config["debug"], self, self.get_namespace("message", handler), resp["text"], resp["nick"], trip
+                        self.modules["message"][handler].run, f"message.{handler}", self.config["debug"], self, self.get_namespace("message", handler), resp["text"], resp["nick"], trip, resp["level"]
                     )
                 )
 
@@ -187,7 +187,7 @@ class Bot:
         for handler in self.modules["leave"]:
             asyncio.create_task(
                 usv3.runner.run(
-                    self.modules["leave"][handler].run, f"leave.{handler}", self.config["debug"], self, self.get_namespace("leave", handler), resp["nick"]
+                    self.modules["leave"][handler].run, f"leave.{handler}", self.config["debug"], self, self.get_namespace("leave", handler), resp["nick"], self.online_hashes[nick], self.online_trips[nick]
                 )
             )
 

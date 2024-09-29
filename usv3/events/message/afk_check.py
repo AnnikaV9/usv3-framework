@@ -6,7 +6,7 @@
 
 class Module:
     @staticmethod
-    async def run(bot, namespace, text, sender, trip):
+    async def run(bot, namespace, text, sender, trip, ulevel):
         afk_users = bot.namespaces.command.afk.afk_users
         if sender in afk_users:
             if afk_users[sender]["whisper"]:
