@@ -28,24 +28,22 @@ def load_config() -> dict:
 
     except Exception as e:
         logger.error(f"Failed to read config ({type(e).__name__}: {e})")
-        raise SystemExit
-
-
-global core_config
-core_config = load_config()
+        raise SystemExit(1)
 
 
 def main() -> None:
+    logger.info(f"Starting usv3 ({importlib.metadata.version('usv3')})")
+    core_config = load_config()
     try:
-        logger.info(f"Starting usv3 ({importlib.metadata.version('usv3')})")
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
         bot = usv3.bot.Bot(core_config)
         asyncio.run(bot.main())
 
     except KeyboardInterrupt:
         logger.warning("Received KeyboardInterrupt")
-        raise SystemExit
+        raise SystemExit(0)
 
     except Exception as e:
         exc_logger = logger.exception if core_config["debug"] else logger.error
         exc_logger(f"usv3 crashed due to a fatal error ({type(e).__name__}: {e})")
+        raise SystemExit(1)
