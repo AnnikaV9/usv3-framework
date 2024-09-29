@@ -18,10 +18,14 @@ class Module:
     # Metadata, all optional. Can have the following:
     # - description
     # - usage
+    # - min_args
+    # - max_args
     # - alias
     # - groups (list of groups that can access the command)
     description = "Your command's help text"
-    usage = "[args1], [args2], [args3]..."
+    usage = "<arg1> [arg2] [arg3]"
+    min_args = 1
+    max_args = 3
 
     @staticmethod
     async def run(bot, namespace, text, sender, trip, ulevel):
@@ -43,19 +47,19 @@ class Module:
 Different events take different arguments for `run()`:
 |Events|Arguments|
 |--|--|
-|command, message, whisper|bot, namespace, text, sender, trip, ulevel|
-|join, leave|bot, namespace, sender, hash, trip|
+|command, message, whisper|`bot` `namespace` `text` `sender` `trip` `ulevel`|
+|join, leave|`bot` `namespace` `sender` `hash` `trip`|
 
 Here's a breakdown of all the arguments:
 |Argument|Description|
 |--|--|
-|bot|Main usv3 instance, see warning below.|
-|namespace|Module's namespace.|
-|text|Message text **without** the command stripped.|
-|sender|Sender's nickname.|
-|hash|Sender's connection hash.|
-|trip|Sender's tripcode.|
-|ulevel|Sender's user level. See [hack-chat/main/commands/utility/_UAC.js](https://github.com/hack-chat/main/blob/752d172dd58022f5c65dc8d002ebc9da71949b1d/commands/utility/_UAC.js#L51-L60)|
+|`bot`|Main usv3 instance, see warning below.|
+|`namespace`|Module's namespace.|
+|`text`|Message text **without** the command stripped.|
+|`sender`|Sender's nickname.|
+|`hash`|Sender's connection hash.|
+|`trip`|Sender's tripcode.|
+|`ulevel`|Sender's user level. See [hack-chat/main/commands/utility/_UAC.js](https://github.com/hack-chat/main/blob/752d172dd58022f5c65dc8d002ebc9da71949b1d/commands/utility/_UAC.js#L51-L60)|
 
 > [!WARNING]
 > The `bot` object is the main usv3 instance, messing with its attributes can result in crashes. Safe methods you can call from `bot` are `send()`, `reply()` and `whisper()`. These are documented in the next section.
@@ -93,6 +97,18 @@ A whisper shortcut is also provided:
 ```python
 await bot.whisper(sender, "Don't tell anyone")
 ```
+
+
+## Useful attributes
+The `bot` object manages a few useful attributes that can be read from within modules:
+|Attribute|Description|
+|--|--|
+|`online_users`|*List* of online nicknames.|
+|`online_trips`|*Dictionary* of online nicknames and their respective trips.|
+|`online_hashes`|*Dictionary* of online nicknames and their respective connection hashes.|
+
+> [!WARNING]
+> These attributes (except `namespaces`) are meant to be read-only. Modifying them from a module can result in crashes.
 
 
 ## Cython modules

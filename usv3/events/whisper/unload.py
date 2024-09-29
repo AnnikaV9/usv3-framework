@@ -11,15 +11,12 @@ import usv3.loader
 class Module:
     description = "Unloads modules"
     usage = "<event.name> [event.name] [ev..."
+    min_args = 1
     groups = ["admins"]
 
     @staticmethod
     async def run(bot, namespace, text, sender, trip, ulevel):
         args = text.split()
-        if len(args) == 1:
-            await bot.whisper(sender, f"Usage: {args[0]} {Module.usage}")
-            return
-
         args.pop(0)
         modules_to_unload = []
         for module in args:

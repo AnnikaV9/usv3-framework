@@ -45,6 +45,12 @@ def load_modules(bot, reload: bool) -> tuple[int, int]:
             if hasattr(module.Module, "usage"):
                 module_map[event][name]["usage"] = module.Module.usage
 
+            if hasattr(module.Module, "min_args"):
+                module_map[event][name]["min_args"] = module.Module.min_args
+
+            if hasattr(module.Module, "max_args"):
+                module_map[event][name]["max_args"] = module.Module.max_args
+
             if hasattr(module.Module, "alias"):
                 module_map[event][name]["alias"] = module.Module.alias
 

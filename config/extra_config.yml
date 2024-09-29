@@ -27,6 +27,7 @@ groups:
   admins:
     - 111111
     - 222222
+    - carrOt
 
   # trusted:
   #   - 333333
@@ -35,11 +36,13 @@ groups:
 
 # Configuration options for individual modules go here. Options are
 # NOT isolated by module, they're only split for readability and ease
-# of use. Available as `bot.cmd_config["<module>"]["<option>"]`
+# of use. Available as `bot.cmd_config["<event>"]["<name>"]["<option>"]`
 cmd_config:
-  help:
-    footer: "https://github.com/AnnikaV9/usv3-framework"
+  command:
+    help:
+      footer: "https://github.com/AnnikaV9/usv3-framework"
 
-  # module_name:
-    # option: value
-    # option: value
+  # event:
+    # name:
+      # option: value
+      # option: value

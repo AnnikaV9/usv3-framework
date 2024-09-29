@@ -34,7 +34,7 @@ Whisper commands: {', '.join(commands['whisper'])}
 \\-
 Run {bot.prefix}help <command> [whisper] for more information about a specific command.
 \\-
-{bot.cmd_config['help'].get('footer', '')}""")
+{bot.cmd_config['command']['help'].get('footer', '')}""")
 
         else:
             command = args[1]

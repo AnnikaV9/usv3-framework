@@ -124,13 +124,22 @@ class Bot:
 
                     if trip not in master_list and len(groups) > 0:
                         await self.reply(resp["nick"], "You don't have permission to use this command")
+                        return
 
-                    else:
-                        asyncio.create_task(
-                            usv3.runner.run(
-                                self.modules["command"][command].run, f"command.{command}", self.config["debug"], self, self.get_namespace("command", command), resp["text"], resp["nick"], trip, resp["level"]
-                            )
+                    n_args = len(resp["text"].split(" ")) - 1
+                    if "min_args" in self.cmd_map["command"][command] and n_args < self.cmd_map["command"][command]["min_args"]:
+                        await self.reply(resp["nick"], f"Usage: {self.prefix}{command} {self.cmd_map['command'][command]['usage']}")
+                        return
+
+                    if "max_args" in self.cmd_map["command"][command] and n_args > self.cmd_map["command"][command]["max_args"]:
+                        await self.reply(resp["nick"], f"Usage: {self.prefix}{command} {self.cmd_map['command'][command]['usage']}")
+                        return
+
+                    asyncio.create_task(
+                        usv3.runner.run(
+                            self.modules["command"][command].run, f"command.{command}", self.config["debug"], self, self.get_namespace("command", command), resp["text"], resp["nick"], trip, resp["level"]
                         )
+                    )
 
     async def handle_whisper(self, resp: dict) -> None:
         trip = resp.get("trip")
@@ -155,13 +164,22 @@ class Bot:
 
                     if trip not in master_list and len(groups) > 0:
                         await self.whisper(resp["from"], "You don't have permission to use this command")
+                        return
 
-                    else:
-                        asyncio.create_task(
-                            usv3.runner.run(
-                                self.modules["whisper"][command].run, f"whisper.{command}", self.config["debug"], self, self.get_namespace("whisper", command), text, resp["from"], trip, resp["level"]
-                            )
+                    n_args = len(text.split(" ")) - 1
+                    if "min_args" in self.cmd_map["whisper"][command] and n_args < self.cmd_map["whisper"][command]["min_args"]:
+                        await self.whisper(resp["from"], f"Usage: {command} {self.cmd_map['whisper'][command]['usage']}")
+                        return
+
+                    if "max_args" in self.cmd_map["whisper"][command] and n_args > self.cmd_map["whisper"][command]["max_args"]:
+                        await self.whisper(resp["from"], f"Usage: {command} {self.cmd_map['whisper'][command]['usage']}")
+                        return
+
+                    asyncio.create_task(
+                        usv3.runner.run(
+                            self.modules["whisper"][command].run, f"whisper.{command}", self.config["debug"], self, self.get_namespace("whisper", command), text, resp["from"], trip, resp["level"]
                         )
+                    )
 
     async def handle_join(self, resp: dict) -> None:
         trip = resp.get("trip")
