@@ -1,12 +1,14 @@
-# # # # # # # # # # # # # # # # # # # # # # # #
-#  Core configuration, NOT live reloadable.   #
-# # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#  Core configuration, NOT live reloadable.           #
+#  All options available as `bot.config["<option>"]`  #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
-# Available as `bot.config["<option>"]`
 channel: myfavouritechannel
 nick: mysupercoolbot
 password: myverysecrettrippassword
 server: wss://hack.chat/chat-ws
-debug: false # Log tracebacks and every event. If false,
-             # logs only 'command' and 'whisper' events.
+
+# Log tracebacks and every event. If false,
+# logs only 'command' and 'whisper' events.
+debug: false
