@@ -8,7 +8,9 @@ from loguru import logger
 
 async def run(task: Callable, module: str, debug: bool, *args) -> None:
     try:
-        logger.info(f"Module {module} triggered")
+        if debug or module.split(".")[0] in ("command", "whisper"):
+            logger.info(f"Module {module} triggered")
+
         await task(*args)
 
     except Exception as e:

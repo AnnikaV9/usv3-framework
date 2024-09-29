@@ -8,4 +8,5 @@ channel: myfavouritechannel
 nick: mysupercoolbot
 password: myverysecrettrippassword
 server: wss://hack.chat/chat-ws
-debug: false # Log more extensive exception information
+debug: false # Log tracebacks and every event. If false,
+             # logs only 'command' and 'whisper' events.

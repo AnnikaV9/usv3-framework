@@ -102,7 +102,11 @@ class Bot:
 
         if resp["nick"] != self.config["nick"]:
             for handler in self.modules["message"]:
-                asyncio.create_task(self.modules["message"][handler].run(self, self.get_namespace("message", handler), resp["text"], resp["nick"], trip))
+                asyncio.create_task(
+                    usv3.runner.run(
+                        self.modules["message"][handler].run, f"message.{handler}", self.config["debug"], self, self.get_namespace("message", handler), resp["text"], resp["nick"], trip
+                    )
+                )
 
             for command in self.modules["command"]:
                 cmds_with_args = [f"{self.prefix}{command} "]
@@ -122,7 +126,11 @@ class Bot:
                         await self.reply(resp["nick"], "You don't have permission to use this command")
 
                     else:
-                        asyncio.create_task(usv3.runner.run(self.modules["command"][command].run, f"command.{command}", self.config["debug"], self, self.get_namespace("command", command), resp["text"], resp["nick"], trip, resp["level"]))
+                        asyncio.create_task(
+                            usv3.runner.run(
+                                self.modules["command"][command].run, f"command.{command}", self.config["debug"], self, self.get_namespace("command", command), resp["text"], resp["nick"], trip, resp["level"]
+                            )
+                        )
 
     async def handle_whisper(self, resp: dict) -> None:
         trip = resp.get("trip")
@@ -149,7 +157,11 @@ class Bot:
                         await self.whisper(resp["from"], "You don't have permission to use this command")
 
                     else:
-                        asyncio.create_task(usv3.runner.run(self.modules["whisper"][command].run, f"whisper.{command}", self.config["debug"], self, self.get_namespace("whisper", command), text, resp["from"], trip, resp["level"]))
+                        asyncio.create_task(
+                            usv3.runner.run(
+                                self.modules["whisper"][command].run, f"whisper.{command}", self.config["debug"], self, self.get_namespace("whisper", command), text, resp["from"], trip, resp["level"]
+                            )
+                        )
 
     async def handle_join(self, resp: dict) -> None:
         trip = resp.get("trip")
@@ -164,12 +176,20 @@ class Bot:
             self.groups["mods"].append(trip)
 
         for handler in self.modules["join"]:
-            asyncio.create_task(usv3.runner.run(self.modules["join"][handler].run, f"join.{handler}", self.config["debug"], self, self.get_namespace("join", handler), resp["nick"], resp["hash"], resp["trip"]))
+            asyncio.create_task(
+                usv3.runner.run(
+                    self.modules["join"][handler].run, f"join.{handler}", self.config["debug"], self, self.get_namespace("join", handler), resp["nick"], resp["hash"], resp["trip"]
+                )
+            )
 
     async def handle_leave(self, resp: dict) -> None:
         nick = resp["nick"]
         for handler in self.modules["leave"]:
-            asyncio.create_task(usv3.runner.run(self.modules["leave"][handler].run, f"leave.{handler}", self.config["debug"], self, self.get_namespace("leave", handler), resp["nick"]))
+            asyncio.create_task(
+                usv3.runner.run(
+                    self.modules["leave"][handler].run, f"leave.{handler}", self.config["debug"], self, self.get_namespace("leave", handler), resp["nick"]
+                )
+            )
 
         if self.online_trips[nick] in self.groups["mods"]:
             self.groups["mods"].remove(self.online_trips[nick])

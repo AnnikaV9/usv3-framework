@@ -19,5 +19,5 @@ class Module:
     async def run(bot, namespace, text, sender, trip, ulevel):
         word = random.choice(namespace.wordlist.splitlines())
         scrambled_word = "".join(random.sample(word, len(word)))
-        namespace.solution =  word
+        namespace.solution = word
         await bot.send(text=f"**Scramble started:** {scrambled_word}")
