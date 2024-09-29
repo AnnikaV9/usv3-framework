@@ -27,7 +27,6 @@ groups:
   admins:
     - 111111
     - 222222
-    - carrOt
 
   # trusted:
   #   - 333333
