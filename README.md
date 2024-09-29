@@ -113,7 +113,9 @@ WantedBy=default.target
 ```
 Edit to match your setup and place it in `~/.config/systemd/user/`
 
-Run `systemctl --user daemon-reload` and `systemctl --user enable --now usv3.service` to start and enable the service.
+Run `systemctl --user daemon-reload` and `systemctl --user enable --now usv3` to start and enable the service.
+
+Once the service is up, you can run `systemctl --user status usv3` or `journalctl --user -e -u usv3` to view resource usage or logs.
 
 > [!NOTE]
 > If you have issues with usv3 being killed when you log out, enable lingering with `sudo loginctl enable-linger $USER`
