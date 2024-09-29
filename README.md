@@ -40,7 +40,7 @@ class Module:
     async def run(bot, namespace, text, sender, trip, ulevel):
 ```
 
-A namespace is created for each module. This can be used to store data that needs to be accessed later or shared between different modules. Within the same module, this is available as `namespace`. A different module's namespace can be accessed with `bot.namespaces.<event>.<name>`
+A namespace is created for each module. This can be used as a safe place to store data that needs to be accessed later or shared between different modules. Within the same module, this is available as `namespace`. A different module's namespace can be accessed with `bot.namespaces.<event>.<name>`
 
 
 Different events take different arguments for `run()`:
@@ -51,6 +51,9 @@ Different events take different arguments for `run()`:
 |join|bot, namespace, sender, hash, trip|
 |leave|bot, namespace, sender|
 |whisper|bot, namespace, text, sender, trip, ulevel|
+
+> [!WARNING]
+> The `bot` object is the main usv3 instance, messing with its attributes can result in crashes. Safe methods you can call from `bot` are `send()`, `reply()` and `whisper()`. These are documented in the next section.
 
 A few example modules are shipped with the framework. You can use them as a reference to create your own.
 
@@ -90,7 +93,7 @@ usv3 supports the building and loading of cython modules. Dependencies required 
 
 Adding a cython module is pretty much the same as adding a pure python module, just drop the pyx file into its respective event. After that, run `poetry run build_cython` to build all cython modules.
 
-> [!IMPORTANT]
+> [!NOTE]
 > Unlike pure python modules, cython modules will not reflect changes after rebuilding when using the `reload` command. You will have to restart the bot to load the changes.
 
 
