@@ -9,8 +9,7 @@ class Module:
     alias = "h"
 
     @staticmethod
-    async def run(bot, namespace, text, sender, trip, ulevel):
-        args = text.split()
+    async def run(bot, namespace, text, args, sender, trip, ulevel):
         commands = {"command": [], "whisper": []}
         groups = []
         for group in bot.groups:
@@ -26,7 +25,7 @@ class Module:
                 else:
                     commands[event].append(command)
 
-        if len(args) == 1:
+        if not args:
             await bot.reply(sender, f"""\n\\-
 Chat commands: {', '.join(commands['command'])}
 \\-
@@ -35,20 +34,20 @@ Whisper commands: {', '.join(commands['whisper'])}
 Run {bot.prefix}help <command> [whisper] for more information about a specific command.
 \\-
 {bot.cmd_config['command']['help'].get('footer', '')}""")
+            return
 
-        else:
-            command = args[1]
-            whisper_help = False
-            event = "command"
-            if len(args) > 2 and args[2] == "whisper":
-                commands["command"] = commands["whisper"]
-                whisper_help = True
-                event = "whisper"
+        command = args[0]
+        whisper_help = False
+        event = "command"
+        if len(args) > 1 and args[1] == "whisper":
+            commands["command"] = commands["whisper"]
+            whisper_help = True
+            event = "whisper"
 
-            if command in commands["command"]:
-                desc = bot.cmd_map[event][command].get("description", "Command has no description.")
-                usage = bot.cmd_map[event][command].get("usage", "")
-                await bot.reply(sender, f"""`{command}`\n\\-\n{desc}\n\\-\nUsage: {f"/w {bot.config['nick']} {command}" if whisper_help else f"{bot.prefix}{command}"} {usage}""")
+        if command in commands["command"]:
+            desc = bot.cmd_map[event][command].get("description", "Command has no description.")
+            usage = bot.cmd_map[event][command].get("usage", "")
+            await bot.reply(sender, f"""`{command}`\n\\-\n{desc}\n\\-\nUsage: {f"/w {bot.config['nick']} {command}" if whisper_help else f"{bot.prefix}{command}"} {usage}""")
+            return
 
-            else:
-                await bot.reply(sender, f"No such command: {command}")
+        await bot.reply(sender, f"No such command: {command}")

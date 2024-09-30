@@ -13,6 +13,6 @@ class Module:
     groups = ["admins"]
 
     @staticmethod
-    async def run(bot, namespace, text, sender, trip, ulevel):
+    async def run(bot, namespace, text, args, sender, trip, ulevel):
         succeeded, failed = usv3.loader.load(bot, reload=True)
         await bot.whisper(sender, f"Reloaded config and modules ({succeeded} succeeded, {failed} failed)")

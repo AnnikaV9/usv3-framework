@@ -9,12 +9,10 @@ class Module:
     usage = "[reason]"
 
     @staticmethod
-    async def run(bot, namespace, text, sender, tripcode, ulevel) -> None:
+    async def run(bot, namespace, text, args, sender, tripcode, ulevel) -> None:
         if sender not in bot.namespaces.command.afk.afk_users:
-            args = text.split()
             reason = None
-            if len(args) > 1:
-                args.pop(0)
+            if args:
                 reason = " ".join(args)
 
             bot.namespaces.command.afk.afk_users[sender] = {"reason": reason, "whisper": True}

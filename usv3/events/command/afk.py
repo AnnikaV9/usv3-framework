@@ -12,12 +12,10 @@ class Module:
         namespace.afk_users = {}
 
     @staticmethod
-    async def run(bot, namespace, text, sender, trip, ulevel):
+    async def run(bot, namespace, text, args, sender, trip, ulevel):
         if sender not in namespace.afk_users:
-            args = text.split()
             reason = None
-            if len(args) > 1:
-                args.pop(0)
+            if args:
                 reason = " ".join(args)
 
             namespace.afk_users[sender] = {"reason": reason, "whisper": True}

@@ -16,7 +16,7 @@ class Module:
             namespace.wordlist = wordlist.read()
 
     @staticmethod
-    async def run(bot, namespace, text, sender, trip, ulevel):
+    async def run(bot, namespace, text, args, sender, trip, ulevel):
         word = random.choice(namespace.wordlist.splitlines())
         scrambled_word = "".join(random.sample(word, len(word)))
         namespace.solution = word

@@ -32,7 +32,7 @@ def load_config() -> dict:
 
 
 def main() -> None:
-    logger.info(f"Starting usv3 ({importlib.metadata.version('usv3')})")
+    logger.info(f"Starting usv3 (v{importlib.metadata.version('usv3')})")
     core_config = load_config()
     try:
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

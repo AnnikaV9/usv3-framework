@@ -18,8 +18,8 @@ class Module:
     # Metadata, all optional. Can have the following:
     # - description
     # - usage
-    # - min_args
-    # - max_args
+    # - min_args (Sends usage if not met)
+    # - max_args (Sends usage if exceeded)
     # - alias
     # - groups (list of groups that can access the command)
     description = "Your command's help text"
@@ -28,7 +28,7 @@ class Module:
     max_args = 3
 
     @staticmethod
-    async def run(bot, namespace, text, sender, trip, ulevel):
+    async def run(bot, namespace, text, args, sender, trip, ulevel):
 ```
 If your module needs to do stuff on load, use `on_load()`:
 ```python
@@ -41,13 +41,14 @@ class Module:
         # Whatever else that needs to be done
 
     @staticmethod
-    async def run(bot, namespace, text, sender, trip, ulevel):
+    async def run(bot, namespace, text, args, sender, trip, ulevel):
 ```
 
 Different events take different arguments for `run()`:
 |Events|Arguments|
 |--|--|
-|command, message, whisper|`bot` `namespace` `text` `sender` `trip` `ulevel`|
+|command, whisper|`bot` `namespace` `text` `args` `sender` `trip` `ulevel`|
+|message|`bot` `namespace` `text` `sender` `trip` `ulevel`|
 |join, leave|`bot` `namespace` `sender` `hash` `trip`|
 
 Here's a breakdown of all the arguments:
@@ -55,7 +56,8 @@ Here's a breakdown of all the arguments:
 |--|--|
 |`bot`|Main usv3 instance, see warning below.|
 |`namespace`|Module's namespace.|
-|`text`|Message text **without** the command stripped.|
+|`text`|Full message text without the command stripped.|
+|`args`|Text trailing the command split into a list of arguments.|
 |`sender`|Sender's nickname.|
 |`hash`|Sender's connection hash.|
 |`trip`|Sender's tripcode.|
