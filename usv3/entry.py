@@ -5,7 +5,6 @@
 #   $ ./.venv/bin/python .venv/bin/bot
 #
 
-import asyncio
 import uvloop
 import atexit
 import importlib.metadata
@@ -35,9 +34,8 @@ def main() -> None:
     logger.info(f"Starting usv3 (v{importlib.metadata.version('usv3')})")
     core_config = load_config()
     try:
-        asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
         bot = usv3.bot.Bot(core_config)
-        asyncio.run(bot.main())
+        uvloop.run(bot.main())
 
     except KeyboardInterrupt:
         logger.warning("Received KeyboardInterrupt")

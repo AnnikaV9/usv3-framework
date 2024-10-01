@@ -5,6 +5,7 @@
 
 import json
 import asyncio
+import uvloop
 import websockets.asyncio.client
 import websockets.exceptions
 from types import SimpleNamespace
@@ -12,6 +13,9 @@ from loguru import logger
 
 import usv3.loader
 import usv3.runner
+
+
+asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class Bot:
