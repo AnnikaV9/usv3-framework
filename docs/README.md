@@ -3,10 +3,10 @@ An extensible bot framework for [hack.chat](https://hack.chat)
 
 
 ## Setting up
-usv3 requires >= Python 3.10 and [poetry](https://python-poetry.org/)
+usv3 requires Python ^3.10 and [Poetry](https://python-poetry.org/)
 1. Set up the project with `poetry install`
-3. Configure the bot in [config](config)
-4. Run the bot with `poetry run usv3`
+2. Configure the bot in [config](../config)
+3. Run the bot with `poetry run usv3`
 
 
 ## Adding your own stuff
@@ -70,11 +70,11 @@ A namespace is created for each module. This can be used as a safe place to stor
 
 A few example modules are shipped with the framework. You can use them as reference when creating your own.
 
-After creating a module, place it in its respective event in [usv3/events](usv3/events). The module will be found and loaded automatically. If your module has any dependencies, add them to [pyproject.toml](pyproject.toml) under `tool.poetry.group.cmd.dependencies` and run `poetry update`.
+After creating a module, place it in its respective event in [usv3/events](../usv3/events). The module will be found and loaded automatically. If your module has any dependencies, add them to [pyproject.toml](../pyproject.toml) under `tool.poetry.group.cmd.dependencies` and run `poetry update`.
 
 For chat/whisper commands, the name of the module will be the command that calls it. You can add an alias for each one if a shorter alternate command is needed.
 
-The `reload` command live reloads all loaded modules and any new modules that have been added. Note that this will re-run `on_load()` in all modules that have it. The configuration file [config/extra_config.yml](config/extra_config.yml) will also be reloaded.
+The `reload` command live reloads all loaded modules and any new modules that have been added. Note that this will re-run `on_load()` in all modules that have it. The configuration file [config/extra_config.yml](../config/extra_config.yml) will also be reloaded.
 
 
 ## Replying to the server
@@ -110,7 +110,7 @@ The `bot` object manages a few useful attributes that can be read from within mo
 |`online_hashes`|*Dictionary* of online nicknames and their respective connection hashes.|
 
 > [!WARNING]
-> These attributes (except `namespaces`) are meant to be read-only. Modifying them from a module can result in crashes.
+> These attributes are meant to be read-only. Modifying them from a module can result in crashes.
 
 
 ## Cython modules
