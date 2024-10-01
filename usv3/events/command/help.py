@@ -4,7 +4,7 @@
 #
 
 class Module:
-    description = "Displays information about available commands."
+    description = "Displays information about available commands"
     usage = "[command] [whisper]"
     max_args = 2
     alias = "h"
