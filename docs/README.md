@@ -68,8 +68,7 @@ Here's a breakdown of all the arguments:
 
 A namespace is created for each module. This can be used as a safe place to store data that needs to be accessed later or shared between different modules. Within the same module, this is available as `namespace`. A different module's namespace can be accessed with `bot.namespaces.<event>.<name>`.
 
-A few example modules are shipped with the framework. You can use them as reference when creating your own. More modules that aren't examples/essentials can found in a [separate repository](https://github.com/AnnikaV9/usv3-modules).
-
+A few example modules can found in a [separate repository](https://github.com/AnnikaV9/usv3-modules). You can use them as reference when creating your own.
 
 After creating a module, place it in its respective event in [usv3/events](../usv3/events). The module will be found and loaded automatically. If your module has any dependencies, add them to [pyproject.toml](../pyproject.toml) under `tool.poetry.group.cmd.dependencies` and run `poetry update`.
 
