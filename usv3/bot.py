@@ -55,27 +55,20 @@ class Bot:
             try:
                 self.ws = ws
                 await self.send(cmd="join", nick=f"{self.config['nick']}#{self.config['password']}", channel=self.config["channel"])
-                loops = asyncio.gather(self.ping_loop(), self.receive_loop())
-                await loops
+                loop = asyncio.create_task(self.recv_loop())
+                await loop
 
             except websockets.exceptions.ConnectionClosedError:
                 if self.reconnect:
                     logger.error("Connection closed, resetting state")
-                    if "loops" in locals():
-                        loops.cancel()
-
+                    loop.cancel()
                     self.reset_state()
                     logger.info(f"Waiting for connection from {self.config['server']}")
                     continue
 
                 raise Exception("Connection closed, reconnect disabled")
 
-    async def ping_loop(self) -> None:
-        while True:
-            await asyncio.sleep(60)
-            await self.send(cmd="ping")
-
-    async def receive_loop(self) -> None:
+    async def recv_loop(self) -> None:
         while True:
             resp = await self.ws.recv()
             resp = json.loads(resp)

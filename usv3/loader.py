@@ -107,7 +107,6 @@ def unload(bot, modules: list) -> None:
 def reinitialize(bot) -> None:
     for event in bot.modules:
         for module in bot.modules[event]:
-            if hasattr(bot.modules[event][module], "on_load"):
-                bot.modules[event][module].on_load(bot)
-
             setattr(getattr(bot.namespaces, event), module, SimpleNamespace())
+            if hasattr(bot.modules[event][module], "on_load"):
+                bot.modules[event][module].on_load(bot, getattr(getattr(bot.namespaces, event), module))
