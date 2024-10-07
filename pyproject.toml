@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "usv3"
 version = "v3.1.1-dev"
-description = "An extensible bot framework for hack.chat"
+description = "An extensible and modular bot framework for hack.chat"
 license = "Unlicense"
 authors = ["AnnikaV9 <carrot.moncher@gmail.com>"]
 

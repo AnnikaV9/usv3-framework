@@ -1,5 +1,5 @@
 # usv3
-An extensible bot framework for [hack.chat](https://hack.chat)
+An extensible and modular bot framework for [hack.chat](https://hack.chat)
 
 
 ## Setting up
