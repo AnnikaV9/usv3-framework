@@ -18,5 +18,5 @@ class Module:
             if args:
                 reason = " ".join(args)
 
-            namespace.afk_users[sender] = {"reason": reason, "whisper": True}
+            namespace.afk_users[sender] = {"reason": reason, "whisper": False}
             await bot.reply(sender, f"You're now marked AFK {f'({reason})' if reason else ''}")
