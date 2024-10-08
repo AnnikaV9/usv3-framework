@@ -80,7 +80,7 @@ def load_config(bot, reload: bool) -> None:
     logger.success(f"{'Reloaded' if reload else 'Loaded'} config/extra_config.yml")
 
 
-def find_modules() -> tuple[dict, int]:
+def find_modules() -> tuple[dict[str, dict[str, dict[str, str]]], int]:
     logger.info("Searching for modules")
     num_modules = 0
     module_map = {"command": {}, "message": {}, "join": {}, "leave": {}, "whisper": {}}

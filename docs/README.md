@@ -8,6 +8,11 @@ usv3 requires Python ^3.10 and [Poetry](https://python-poetry.org/)
 2. Configure the bot in [config](../config)
 3. Run the bot with `poetry run usv3`
 
+When testing, you can override the options in [config/core_config.yml](../config/core_config.yml) with flags:
+```bash
+poetry run usv3 --debug --server ws://127.0.0.1:6060 --channel testing
+```
+
 
 ## Adding your own stuff
 usv3 can be extended by adding modules that get triggered on various events.
