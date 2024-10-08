@@ -1,3 +1,28 @@
+[tool.poetry.group.cmd.dependencies]
+# add dependencies required by modules
+
+[tool.poetry.dependencies]
+python = "^3.10"                                       # GROUP
+cython = { version = "*", optional = true }            # cython
+setuptools = { version = "*", optional = true }        # cython
+flake8 = { version = "*", optional = true }            # dev
+icecream = { version = "*", optional = true }          # dev
+line_profiler = { version = "*", optional = true }     # dev
+# add other dev tools
+
+[tool.poetry.extras]
+cython = ["cython", "setuptools"]
+dev = ["flake8",
+       "icecream",
+       "line_profiler"
+       # add dev tools from above to enable them
+       ]
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#  Run `poetry update` after adding new dependencies to update the lock file  #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
 [tool.poetry]
 name = "usv3"
 version = "v3.1.2-dev"
@@ -5,24 +30,12 @@ description = "An extensible and modular bot framework for hack.chat"
 license = "Unlicense"
 authors = ["AnnikaV9 <carrot.moncher@gmail.com>"]
 
-[tool.poetry.dependencies]
-python = "^3.10"
+[tool.poetry.group.core.dependencies]
 websockets = "~13.1.0"
 uvloop = "~0.20.0"
 loguru = "~0.7.2"
 "ruamel.yaml" = "~0.18.6"
-cython = { version = "*", optional = true }
-setuptools = { version = "*", optional = true }
-flake8 = { version = "*", optional = true }
-icecream = { version = "*", optional = true }
-line_profiler = { version = "*", optional = true }
-
-[tool.poetry.extras]
-cython = ["cython", "setuptools"]
-dev = ["flake8", "icecream", "line_profiler"]
 
 [tool.poetry.scripts]
 usv3 = "usv3.entry:main"
 build_cython = "tools.tasks:build_cython"
-
-[tool.poetry.group.cmd.dependencies]
