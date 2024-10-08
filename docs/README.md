@@ -17,6 +17,8 @@ poetry run usv3 --debug --server ws://127.0.0.1:6060 --channel testing
 ## Adding your own stuff
 usv3 can be extended by adding modules that get triggered on various events.
 
+A few useful dev tools ([flake8](https://github.com/PyCQA/flake8), [icecream](https://github.com/gruns/icecream) and [line_profiler](https://github.com/pyutils/line_profiler)) can be installed with `poetry install -E dev`. If you have more, add them under `tool.poetry.dependencies` in [pyproject.toml](./pyproject.toml) as optional and inside the dev extras list. When deploying, you can uninstall all dev dependencies by running `poetry install`.
+
 A basic module for the command event looks like this:
 ```python
 class Module:
@@ -119,9 +121,11 @@ The `bot` object manages a few useful attributes that can be read from within mo
 
 
 ## Cython modules
-usv3 supports the building and loading of cython modules. Dependencies required for this are not installed by default, they can be with `poetry install -E cython`.
+usv3 supports the building and loading of cython modules. Dependencies required for this are not installed by default, they can be with `poetry install -E cython`.  If you don't want dev dependencies to be uninstalled, run `poetry install -E "dev cython"` instead.
 
 Adding a cython module is pretty much the same as adding a pure python module, just drop the pyx file into its respective event. After that, run `poetry run build_cython` to build all cython modules.
+
+To get a list of modules that will be built without actually building them, pass `--dry-run` to the above command.
 
 > [!NOTE]
 > Unlike pure python modules, cython modules will not reflect changes after rebuilding when using the `reload` command. You will have to restart the bot to load the changes.

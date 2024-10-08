@@ -14,10 +14,12 @@ loguru = "~0.7.2"
 cython = { version = "*", optional = true }
 setuptools = { version = "*", optional = true }
 flake8 = { version = "*", optional = true }
+icecream = { version = "*", optional = true }
+line_profiler = { version = "*", optional = true }
 
 [tool.poetry.extras]
 cython = ["cython", "setuptools"]
-dev = ["flake8"]
+dev = ["flake8", "icecream", "line_profiler"]
 
 [tool.poetry.scripts]
 usv3 = "usv3.entry:main"
