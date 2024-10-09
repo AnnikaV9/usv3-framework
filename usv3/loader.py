@@ -18,6 +18,7 @@ def load(bot, reload: bool = False) -> tuple[int, int]:
 def load_modules(bot, reload: bool) -> tuple[int, int]:
     module_map, num_modules = find_modules()
     modules = {"command": {}, "message": {}, "join": {}, "leave": {}, "whisper": {}}
+    commands = {"command": {}, "whisper": {}}
     bot.namespaces = SimpleNamespace()
     failed = 0
     for event in module_map:
@@ -39,27 +40,33 @@ def load_modules(bot, reload: bool) -> tuple[int, int]:
                 continue
 
             modules[event][name] = module.Module
-            if hasattr(module.Module, "description"):
-                module_map[event][name]["description"] = module.Module.description
+            if event in commands:
+                commands[event][name] = {"w_args": [], "wo_args": []}
+                commands[event][name]["w_args"].append(f"{bot.prefix}{name} ")
+                commands[event][name]["wo_args"].append(f"{bot.prefix}{name}")
+                if hasattr(module.Module, "alias"):
+                    commands[event][name]["w_args"].append(f"{bot.prefix}{module.Module.alias} ")
+                    commands[event][name]["wo_args"].append(f"{bot.prefix}{module.Module.alias}")
+                    module_map[event][name]["alias"] = module.Module.alias
 
-            if hasattr(module.Module, "usage"):
-                module_map[event][name]["usage"] = module.Module.usage
+                if hasattr(module.Module, "description"):
+                    module_map[event][name]["description"] = module.Module.description
 
-            if hasattr(module.Module, "min_args"):
-                module_map[event][name]["min_args"] = module.Module.min_args
+                if hasattr(module.Module, "usage"):
+                    module_map[event][name]["usage"] = module.Module.usage
 
-            if hasattr(module.Module, "max_args"):
-                module_map[event][name]["max_args"] = module.Module.max_args
+                if hasattr(module.Module, "min_args"):
+                    module_map[event][name]["min_args"] = module.Module.min_args
 
-            if hasattr(module.Module, "alias"):
-                module_map[event][name]["alias"] = module.Module.alias
+                if hasattr(module.Module, "max_args"):
+                    module_map[event][name]["max_args"] = module.Module.max_args
 
-            if hasattr(module.Module, "groups"):
-                module_map[event][name]["groups"] = module.Module.groups
+                if hasattr(module.Module, "groups"):
+                    module_map[event][name]["groups"] = module.Module.groups
 
     exc_logger = logger.error if failed > 0 else logger.success
     exc_logger(f"{'Reloaded' if reload else 'Loaded'} modules ({num_modules} succeeded, {failed} failed)")
-    bot.modules, bot.cmd_map = modules, module_map
+    bot.modules, bot.cmd_map, bot.commands = modules, module_map, commands
     return num_modules, failed
 
 
