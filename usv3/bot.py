@@ -6,6 +6,7 @@
 import json
 import asyncio
 import uvloop
+import time
 import websockets.asyncio.client
 import websockets.exceptions
 from types import SimpleNamespace
@@ -24,6 +25,7 @@ class Bot:
         self.modules: dict
         self.cmd_map: dict
         self.commands: dict
+        self.cooldowns: dict
         self.cmd_config: dict
         self.api_keys: dict
         self.groups: dict
@@ -129,11 +131,21 @@ class Bot:
                         await self.reply(resp["nick"], f"Usage: {self.prefix}{command} {self.cmd_map['command'][command]['usage']}")
                         return
 
+                    cooldown = True if "cooldown" in self.cmd_map["command"][command] else False
+                    if cooldown:
+                        left = self.cmd_map["command"][command]["cooldown"] - (int(time.time()) - self.cooldowns["command"][command])
+                        if left > 0:
+                            await self.reply(resp["nick"], f"This command is on cooldown ({left} {'seconds' if left > 1 else 'second'} left)")
+                            return
+
                     asyncio.create_task(
                         usv3.runner.run(
                             self.modules["command"][command].run, f"command.{command}", self.config["debug"], self, self.get_namespace("command", command), resp["text"], args, resp["nick"], trip, resp["level"]
                         )
                     )
+
+                    if cooldown:
+                        self.cooldowns["command"][command] = int(time.time())
 
     async def handle_whisper(self, resp: dict) -> None:
         trip = resp.get("trip")
@@ -165,11 +177,21 @@ class Bot:
                         await self.whisper(resp["from"], f"Usage: {command} {self.cmd_map['whisper'][command]['usage']}")
                         return
 
+                    cooldown = True if "cooldown" in self.cmd_map["whisper"][command] else False
+                    if cooldown:
+                        left = self.cmd_map["whisper"][command]["cooldown"] - (int(time.time()) - self.cooldowns["whisper"][command])
+                        if left > 0:
+                            await self.whisper(resp["from"], f"This command is on cooldown ({left} {'seconds' if left > 1 else 'second'} left)")
+                            return
+
                     asyncio.create_task(
                         usv3.runner.run(
                             self.modules["whisper"][command].run, f"whisper.{command}", self.config["debug"], self, self.get_namespace("whisper", command), text, args, resp["from"], trip, resp["level"]
                         )
                     )
+
+                    if cooldown:
+                        self.cooldowns["whisper"][command] = int(time.time())
 
     async def handle_join(self, resp: dict) -> None:
         trip = resp.get("trip")

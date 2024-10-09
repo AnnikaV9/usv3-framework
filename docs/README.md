@@ -28,6 +28,7 @@ class Module:
     # - min_args (Sends usage if not met)
     # - max_args (Sends usage if exceeded)
     # - alias
+    # - cooldown (in seconds)
     # - groups (list of groups that can access the command)
     description = "Your command's help text"
     usage = "<arg1> [arg2] [arg3]"

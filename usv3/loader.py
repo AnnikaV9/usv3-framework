@@ -19,6 +19,7 @@ def load_modules(bot, reload: bool) -> tuple[int, int]:
     module_map, num_modules = find_modules()
     modules = {"command": {}, "message": {}, "join": {}, "leave": {}, "whisper": {}}
     commands = {"command": {}, "whisper": {}}
+    cooldowns = {"command": {}, "whisper": {}}
     bot.namespaces = SimpleNamespace()
     failed = 0
     for event in module_map:
@@ -64,9 +65,13 @@ def load_modules(bot, reload: bool) -> tuple[int, int]:
                 if hasattr(module.Module, "groups"):
                     module_map[event][name]["groups"] = module.Module.groups
 
+                if hasattr(module.Module, "cooldown"):
+                    cooldowns[event][name] = 0
+                    module_map[event][name]["cooldown"] = module.Module.cooldown
+
     exc_logger = logger.error if failed > 0 else logger.success
     exc_logger(f"{'Reloaded' if reload else 'Loaded'} modules ({num_modules} succeeded, {failed} failed)")
-    bot.modules, bot.cmd_map, bot.commands = modules, module_map, commands
+    bot.modules, bot.cmd_map, bot.commands, bot.cooldowns = modules, module_map, commands, cooldowns
     return num_modules, failed
 
 
