@@ -10,6 +10,7 @@ import time
 import websockets.asyncio.client
 import websockets.exceptions
 from types import SimpleNamespace
+from typing import Literal
 from loguru import logger
 
 import usv3.loader
@@ -108,44 +109,7 @@ class Bot:
                     )
                 )
 
-            for command in self.modules["command"]:
-                commands = self.commands["command"][command]
-                if resp["text"].startswith(tuple(commands["w_args"])) or resp["text"] in commands["wo_args"]:
-                    groups = self.cmd_map["command"][command].get("groups", [])
-                    allowed = []
-                    for group in groups:
-                        if group in self.groups:
-                            allowed.extend(self.groups[group])
-
-                    if trip not in allowed and len(allowed) > 0:
-                        await self.reply(resp["nick"], "You don't have permission to use this command")
-                        return
-
-                    args = resp["text"].split()[1:]
-                    n_args = len(args)
-                    if "min_args" in self.cmd_map["command"][command] and n_args < self.cmd_map["command"][command]["min_args"]:
-                        await self.reply(resp["nick"], f"Usage: {self.prefix}{command} {self.cmd_map['command'][command]['usage']}")
-                        return
-
-                    if "max_args" in self.cmd_map["command"][command] and n_args > self.cmd_map["command"][command]["max_args"]:
-                        await self.reply(resp["nick"], f"Usage: {self.prefix}{command} {self.cmd_map['command'][command]['usage']}")
-                        return
-
-                    cooldown = True if "cooldown" in self.cmd_map["command"][command] else False
-                    if cooldown:
-                        left = self.cmd_map["command"][command]["cooldown"] - (int(time.time()) - self.cooldowns["command"][command])
-                        if left > 0:
-                            await self.reply(resp["nick"], f"This command is on cooldown ({left} {'seconds' if left > 1 else 'second'} left)")
-                            return
-
-                    asyncio.create_task(
-                        usv3.runner.run(
-                            self.modules["command"][command].run, f"command.{command}", self.config["debug"], self, self.get_namespace("command", command), resp["text"], args, resp["nick"], trip, resp["level"]
-                        )
-                    )
-
-                    if cooldown:
-                        self.cooldowns["command"][command] = int(time.time())
+            await self.parse_handle_command("command", trip, resp["nick"], resp["level"], resp["text"])
 
     async def handle_whisper(self, resp: dict) -> None:
         trip = resp.get("trip")
@@ -154,44 +118,48 @@ class Bot:
 
         if resp["from"] != self.config["nick"] and not resp["text"].startswith("You whispered to"):
             text = resp["text"].removeprefix(f"{resp['from']} whispered: ")
-            for command in self.modules["whisper"]:
-                commands = self.commands["whisper"][command]
-                if text.startswith(tuple(commands["w_args"])) or text in commands["wo_args"]:
-                    groups = self.cmd_map["whisper"][command].get("groups", [])
-                    allowed = []
-                    for group in groups:
-                        if group in self.groups:
-                            allowed.extend(self.groups[group])
+            await self.parse_handle_command("whisper", trip, resp["from"], resp["level"], text)
 
-                    if trip not in allowed and len(groups) > 0:
-                        await self.whisper(resp["from"], "You don't have permission to use this command")
+    async def parse_handle_command(self, event: Literal["command", "whisper"], trip: str | None, nick: str, level: int, text: str) -> None:
+        reply, prefix = (self.reply, self.prefix) if event == "command" else (self.whisper, "")
+        for command in self.modules[event]:
+            commands = self.commands[event][command]
+            if text.startswith(tuple(commands["w_args"])) or text in commands["wo_args"]:
+                groups = self.cmd_map[event][command].get("groups", [])
+                allowed = []
+                for group in groups:
+                    if group in self.groups:
+                        allowed.extend(self.groups[group])
+
+                if trip not in allowed and len(allowed) > 0:
+                    await reply(nick, "You don't have permission to use this command")
+                    return
+
+                args = text.split()[1:]
+                n_args = len(args)
+                if "min_args" in self.cmd_map[event][command] and n_args < self.cmd_map[event][command]["min_args"]:
+                    await reply(nick, f"Usage: {prefix}{command} {self.cmd_map[event][command]['usage']}")
+                    return
+
+                if "max_args" in self.cmd_map[event][command] and n_args > self.cmd_map[event][command]["max_args"]:
+                    await reply(nick, f"Usage: {prefix}{command} {self.cmd_map[event][command]['usage']}")
+                    return
+
+                cooldown = True if "cooldown" in self.cmd_map[event][command] else False
+                if cooldown:
+                    left = self.cmd_map[event][command]["cooldown"] - (int(time.time()) - self.cooldowns[event][command])
+                    if left > 0:
+                        await reply(nick, f"This command is on cooldown ({left} {'seconds' if left > 1 else 'second'} left)")
                         return
 
-                    args = text.split()[1:]
-                    n_args = len(args)
-                    if "min_args" in self.cmd_map["whisper"][command] and n_args < self.cmd_map["whisper"][command]["min_args"]:
-                        await self.whisper(resp["from"], f"Usage: {command} {self.cmd_map['whisper'][command]['usage']}")
-                        return
-
-                    if "max_args" in self.cmd_map["whisper"][command] and n_args > self.cmd_map["whisper"][command]["max_args"]:
-                        await self.whisper(resp["from"], f"Usage: {command} {self.cmd_map['whisper'][command]['usage']}")
-                        return
-
-                    cooldown = True if "cooldown" in self.cmd_map["whisper"][command] else False
-                    if cooldown:
-                        left = self.cmd_map["whisper"][command]["cooldown"] - (int(time.time()) - self.cooldowns["whisper"][command])
-                        if left > 0:
-                            await self.whisper(resp["from"], f"This command is on cooldown ({left} {'seconds' if left > 1 else 'second'} left)")
-                            return
-
-                    asyncio.create_task(
-                        usv3.runner.run(
-                            self.modules["whisper"][command].run, f"whisper.{command}", self.config["debug"], self, self.get_namespace("whisper", command), text, args, resp["from"], trip, resp["level"]
-                        )
+                asyncio.create_task(
+                    usv3.runner.run(
+                        self.modules[event][command].run, f"{event}.{command}", self.config["debug"], self, self.get_namespace(event, command), text, args, nick, trip, level
                     )
+                )
 
-                    if cooldown:
-                        self.cooldowns["whisper"][command] = int(time.time())
+                if cooldown:
+                    self.cooldowns[event][command] = int(time.time())
 
     async def handle_join(self, resp: dict) -> None:
         trip = resp.get("trip")

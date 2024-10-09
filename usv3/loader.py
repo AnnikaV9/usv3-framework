@@ -43,11 +43,12 @@ def load_modules(bot, reload: bool) -> tuple[int, int]:
             modules[event][name] = module.Module
             if event in commands:
                 commands[event][name] = {"w_args": [], "wo_args": []}
-                commands[event][name]["w_args"].append(f"{bot.prefix}{name} ")
-                commands[event][name]["wo_args"].append(f"{bot.prefix}{name}")
+                prefix = bot.prefix if event == "command" else ""
+                commands[event][name]["w_args"].append(f"{prefix}{name} ")
+                commands[event][name]["wo_args"].append(f"{prefix}{name}")
                 if hasattr(module.Module, "alias"):
-                    commands[event][name]["w_args"].append(f"{bot.prefix}{module.Module.alias} ")
-                    commands[event][name]["wo_args"].append(f"{bot.prefix}{module.Module.alias}")
+                    commands[event][name]["w_args"].append(f"{prefix}{module.Module.alias} ")
+                    commands[event][name]["wo_args"].append(f"{prefix}{module.Module.alias}")
                     module_map[event][name]["alias"] = module.Module.alias
 
                 if hasattr(module.Module, "description"):
