@@ -1,6 +1,6 @@
-#
-#  Module loader that handles loading and reloading of modules.
-#
+"""
+Module loader that handles loading and reloading of modules.
+"""
 
 # stdlib
 import importlib

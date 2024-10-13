@@ -1,9 +1,9 @@
-#
-#  Entry point for the bot, can be run with the following:
-#   $ poetry run bot
-#   $ ./.venv/bin/bot
-#   $ ./.venv/bin/python .venv/bin/bot
-#
+"""
+Entry point for the bot, can be run with the following:
+   $ poetry run bot
+   $ ./.venv/bin/bot
+   $ ./.venv/bin/python .venv/bin/bot
+"""
 
 # stdlib
 import atexit

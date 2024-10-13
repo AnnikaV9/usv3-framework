@@ -1,6 +1,6 @@
-#
-#  Script for building cython modules.
-#
+"""
+Script for building cython modules.
+"""
 
 import os
 import sys

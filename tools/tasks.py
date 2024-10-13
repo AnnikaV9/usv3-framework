@@ -1,7 +1,7 @@
-#
-#  Invoke style task file for calling tools from poetry
-#  as scripts.
-#
+"""
+Invoke style task file for calling tools from poetry
+as scripts.
+"""
 
 import argparse
 import subprocess

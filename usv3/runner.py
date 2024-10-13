@@ -1,6 +1,6 @@
-#
-#  Runner task for catching and logging module exceptions.
-#
+"""
+Runner task for catching and logging module exceptions.
+"""
 
 # stdlib
 from typing import Callable

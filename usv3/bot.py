@@ -1,7 +1,7 @@
-#
-#  The main bot class that handles the connection to the server
-#  and triggers appropriate events.
-#
+"""
+The main bot class that handles the connection to the server
+and triggers appropriate events.
+"""
 
 # stdlib
 import asyncio
