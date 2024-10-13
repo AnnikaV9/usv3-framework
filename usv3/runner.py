@@ -2,11 +2,17 @@
 #  Runner task for catching and logging module exceptions.
 #
 
+# stdlib
 from typing import Callable
+
+# external
 from loguru import logger
 
 
 async def run(task: Callable, module: str, debug: bool, *args) -> None:
+    """
+    Runs a module, catching and logging exceptions.
+    """
     try:
         if debug or module.split(".")[0] in ("command", "whisper"):
             logger.info(f"Module {module} triggered")

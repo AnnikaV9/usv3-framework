@@ -2,20 +2,29 @@
 #  Module loader that handles loading and reloading of modules.
 #
 
-import os
+# stdlib
 import importlib
+import os
 from types import SimpleNamespace
+
+# external
 from loguru import logger
 from ruamel.yaml import YAML
 
 
 def load(bot, reload: bool = False) -> tuple[int, int]:
+    """
+    Entry point for loading or reloading configuration and modules.
+    """
     logger.info(f"{'Reloading' if reload else 'Loading'} configuration and modules")
     load_config(bot, reload)
     return load_modules(bot, reload)
 
 
 def load_modules(bot, reload: bool) -> tuple[int, int]:
+    """
+    Loads or reloads modules, returning the number of successful and failed loads.
+    """
     module_map, num_modules = find_modules()
     modules = {"command": {}, "message": {}, "join": {}, "leave": {}, "whisper": {}}
     commands = {"command": {}, "whisper": {}}
@@ -78,6 +87,9 @@ def load_modules(bot, reload: bool) -> tuple[int, int]:
 
 
 def load_config(bot, reload: bool) -> None:
+    """
+    Loads or reloads configuration from config/extra_config.yml.
+    """
     yaml = YAML(typ="safe")
     with open("config/extra_config.yml", "r") as extra_config:
         extra_config = yaml.load(extra_config)
@@ -95,6 +107,9 @@ def load_config(bot, reload: bool) -> None:
 
 
 def find_modules() -> tuple[dict[str, dict[str, dict[str, str]]], int]:
+    """
+    Searches for modules in the usv3/events directory.
+    """
     logger.info("Searching for modules")
     num_modules = 0
     module_map = {"command": {}, "message": {}, "join": {}, "leave": {}, "whisper": {}}
@@ -111,6 +126,9 @@ def find_modules() -> tuple[dict[str, dict[str, dict[str, str]]], int]:
 
 
 def unload(bot, modules: list) -> None:
+    """
+    Unloads a list of modules.
+    """
     for module in modules:
         event, name = module.split(".")
         del bot.modules[event][name]
@@ -119,6 +137,10 @@ def unload(bot, modules: list) -> None:
 
 
 def reinitialize(bot) -> None:
+    """
+    Re-runs the on_load method for all loaded modules and resets their
+    namespaces.
+    """
     for event in bot.modules:
         for module in bot.modules[event]:
             setattr(getattr(bot.namespaces, event), module, SimpleNamespace())

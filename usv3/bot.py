@@ -3,16 +3,20 @@
 #  and triggers appropriate events.
 #
 
-import json
+# stdlib
 import asyncio
-import uvloop
+import json
 import time
-import websockets.asyncio.client
-import websockets.exceptions
 from types import SimpleNamespace
 from typing import Literal
+
+# external
+import uvloop
+import websockets.asyncio.client
+import websockets.exceptions
 from loguru import logger
 
+# internal
 import usv3.loader
 import usv3.runner
 
@@ -22,6 +26,9 @@ asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 class Bot:
     def __init__(self, config: dict) -> None:
+        """
+        Initializes the bot by loading configuration and modules.
+        """
         self.config = config
         self.modules: dict
         self.cmd_map: dict
@@ -40,6 +47,9 @@ class Bot:
         self.online_trips = {}
 
     def reset_state(self) -> None:
+        """
+        Resets the bot state by clearing online users reinitializing the loader.
+        """
         self.online_users = []
         self.online_hashes = {}
         self.online_trips = {}
@@ -47,12 +57,21 @@ class Bot:
         usv3.loader.reinitialize(self)
 
     def get_namespace(self, event: str, name: str) -> SimpleNamespace:
+        """
+        Returns the namespace for a given event and name.
+        """
         return getattr(getattr(self.namespaces, event), name)
 
     async def send(self, cmd: str = "chat", **kwargs) -> None:
+        """
+        Sends a packet to the server.
+        """
         await self.ws.send(json.dumps({"cmd": cmd, **kwargs}))
 
     async def main(self) -> None:
+        """
+        Connects to the server, joins the channel and starts the recv loop.
+        """
         logger.info(f"Waiting for connection from {self.config['server']}")
         async for ws in websockets.asyncio.client.connect(self.config["server"], ping_timeout=None):
             logger.success(f"Connected to {self.config['server']}")
@@ -73,6 +92,9 @@ class Bot:
                 raise Exception("Connection closed, reconnect disabled")
 
     async def recv_loop(self) -> None:
+        """
+        Main loop that receives packets from the server and triggers events.
+        """
         while True:
             resp = await self.ws.recv()
             resp = json.loads(resp)
@@ -97,6 +119,9 @@ class Bot:
                     await self.handle_warn(resp)
 
     async def handle_chat(self, resp: dict) -> None:
+        """
+        Handles chat messages and runs the command handler.
+        """
         trip = resp.get("trip")
         if trip == "":
             trip = None
@@ -112,6 +137,9 @@ class Bot:
             await self.parse_handle_command("command", trip, resp["nick"], resp["level"], resp["text"])
 
     async def handle_whisper(self, resp: dict) -> None:
+        """
+        Handles whisper messages and runs the command handler.
+        """
         trip = resp.get("trip")
         if trip == "":
             trip = None
@@ -121,6 +149,9 @@ class Bot:
             await self.parse_handle_command("whisper", trip, resp["from"], resp["level"], text)
 
     async def parse_handle_command(self, event: Literal["command", "whisper"], trip: str | None, nick: str, level: int, text: str) -> None:
+        """
+        Triggers the appropriate command/whisper event.
+        """
         reply, prefix = (self.reply, self.prefix) if event == "command" else (self.whisper, "")
         for command in self.modules[event]:
             commands = self.commands[event][command]
@@ -162,6 +193,9 @@ class Bot:
                     self.cooldowns[event][command] = int(time.time())
 
     async def handle_join(self, resp: dict) -> None:
+        """
+        Handles join events.
+        """
         trip = resp.get("trip")
         if trip == "":
             trip = None
@@ -181,6 +215,9 @@ class Bot:
             )
 
     async def handle_leave(self, resp: dict) -> None:
+        """
+        Handles leave events.
+        """
         nick = resp["nick"]
         for handler in self.modules["leave"]:
             asyncio.create_task(
@@ -197,6 +234,9 @@ class Bot:
         self.online_trips.pop(nick)
 
     async def handle_set(self, resp: dict) -> None:
+        """
+        Handles the set event upon joining a channel.
+        """
         logger.success(f"Joined channel: {resp['channel']}")
         for user in resp["users"]:
             nick = user["nick"]
@@ -209,10 +249,23 @@ class Bot:
         logger.success("usv3 is now live!")
 
     async def handle_warn(self, resp: dict) -> None:
+        """
+        Passes warn messages to the logger.
+        """
         logger.warning(f"Server sent a warn: {resp['text']}")
 
     async def reply(self, nick: str, text: str) -> None:
+        """
+        Sends a message to the chat, mentioning the user.
+        Format: **@nick** text
+        """
         await self.send(text=f"**@{nick}** {text}")
 
     async def whisper(self, nick: str, text: str) -> None:
+        """
+        Sends a whisper to a user.
+        Format:
+                usv3 whispered: -
+                Hello
+        """
         await self.send(cmd="whisper", nick=nick, text=f"\\-\n{text}")
