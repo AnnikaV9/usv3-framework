@@ -25,7 +25,7 @@ dev = ["flake8",
 
 [tool.poetry]
 name = "usv3"
-version = "v3.1.2-dev"
+version = "v3.2.0-dev"
 description = "An extensible and modular bot framework for hack.chat"
 license = "Unlicense"
 authors = ["AnnikaV9 <carrot.moncher@gmail.com>"]
