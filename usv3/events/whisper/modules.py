@@ -6,8 +6,10 @@
 #
 
 class Module:
-    description = "Lists all loaded modules"
-    groups = ["admins"]
+    """
+    desc: 'Lists all loaded modules'
+    groups: ['admins']
+    """
 
     @staticmethod
     async def run(bot, namespace, text, args, sender, trip, ulevel):

@@ -3,7 +3,9 @@
 #
 
 class Module:
-    description = "Measures server response time"
+    """
+    desc: 'Measures server response time'
+    """
 
     @staticmethod
     async def run(bot, namespace, text, args, sender, trip, ulevel):

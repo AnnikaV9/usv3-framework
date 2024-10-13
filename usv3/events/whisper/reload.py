@@ -9,8 +9,10 @@ import usv3.loader
 
 
 class Module:
-    description = "Reloads config and all modules"
-    groups = ["admins"]
+    """
+    desc: 'Lists all loaded modules'
+    groups: ['admins']
+    """
 
     @staticmethod
     async def run(bot, namespace, text, args, sender, trip, ulevel):

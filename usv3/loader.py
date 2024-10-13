@@ -55,29 +55,34 @@ def load_modules(bot, reload: bool) -> tuple[int, int]:
                 prefix = bot.prefix if event == "command" else ""
                 commands[event][name]["w_args"].append(f"{prefix}{name} ")
                 commands[event][name]["wo_args"].append(f"{prefix}{name}")
-                if hasattr(module.Module, "alias"):
-                    commands[event][name]["w_args"].append(f"{prefix}{module.Module.alias} ")
-                    commands[event][name]["wo_args"].append(f"{prefix}{module.Module.alias}")
-                    module_map[event][name]["alias"] = module.Module.alias
+                mod_config = {}
+                if module.Module.__doc__:
+                    yaml = YAML(typ="safe")
+                    mod_config = yaml.load(module.Module.__doc__)
 
-                if hasattr(module.Module, "description"):
-                    module_map[event][name]["description"] = module.Module.description
+                if "alias" in mod_config:
+                    commands[event][name]["w_args"].append(f"{prefix}{mod_config['alias']} ")
+                    commands[event][name]["wo_args"].append(f"{prefix}{mod_config['alias']}")
+                    module_map[event][name]["alias"] = mod_config["alias"]
 
-                if hasattr(module.Module, "usage"):
-                    module_map[event][name]["usage"] = module.Module.usage
+                if "desc" in mod_config:
+                    module_map[event][name]["desc"] = mod_config["desc"]
 
-                if hasattr(module.Module, "min_args"):
-                    module_map[event][name]["min_args"] = module.Module.min_args
+                if "usage" in mod_config:
+                    module_map[event][name]["usage"] = mod_config["usage"]
 
-                if hasattr(module.Module, "max_args"):
-                    module_map[event][name]["max_args"] = module.Module.max_args
+                if "min_args" in mod_config:
+                    module_map[event][name]["min_args"] = mod_config["min_args"]
 
-                if hasattr(module.Module, "groups"):
-                    module_map[event][name]["groups"] = module.Module.groups
+                if "max_args" in mod_config:
+                    module_map[event][name]["max_args"] = mod_config["max_args"]
 
-                if hasattr(module.Module, "cooldown"):
+                if "groups" in mod_config:
+                    module_map[event][name]["groups"] = mod_config["groups"]
+
+                if "cooldown" in mod_config:
                     cooldowns[event][name] = 0
-                    module_map[event][name]["cooldown"] = module.Module.cooldown
+                    module_map[event][name]["cooldown"] = mod_config["cooldown"]
 
     exc_logger = logger.error if failed > 0 else logger.success
     num_modules -= failed

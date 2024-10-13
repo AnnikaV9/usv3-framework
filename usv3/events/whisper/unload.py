@@ -9,10 +9,12 @@ import usv3.loader
 
 
 class Module:
-    description = "Unloads modules"
-    usage = "<event.name> [event.name] [ev..."
-    min_args = 1
-    groups = ["admins"]
+    """
+    desc: 'Unloads modules'
+    usage: '<event.name> [event.name] [event.name] ...'
+    min_args: 1
+    groups: ['admins']
+    """
 
     @staticmethod
     async def run(bot, namespace, text, args, sender, trip, ulevel):

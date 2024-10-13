@@ -22,18 +22,21 @@ A few useful dev tools ([flake8](https://github.com/PyCQA/flake8), [icecream](ht
 A basic module for the command event looks like this:
 ```python
 class Module:
-    # Metadata, all optional. Can have the following:
-    # - description
-    # - usage
-    # - min_args (Sends usage if not met)
-    # - max_args (Sends usage if exceeded)
-    # - alias
-    # - cooldown (in seconds)
-    # - groups (list of groups that can access the command)
-    description = "Your command's help text"
-    usage = "<arg1> [arg2] [arg3]"
-    min_args = 1
-    max_args = 3
+    """
+    # Module specific configuration in yaml.
+    # All optional, valid options are:
+    #  - desc
+    #  - usage
+    #  - min_args (Sends usage if not met)
+    #  - max_args (Sends usage if exceeded)
+    #  - alias
+    #  - cooldown (in seconds)
+    #  - groups (list of groups that can access the command)
+    desc: 'Your command's help text'
+    usage: '<arg1> [arg2] [arg3]'
+    min_args: 1
+    max_args: 3
+    """
 
     @staticmethod
     async def run(bot, namespace, text, args, sender, trip, ulevel):

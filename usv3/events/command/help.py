@@ -4,10 +4,12 @@
 #
 
 class Module:
-    description = "Displays information about available commands"
-    usage = "[command] [whisper]"
-    max_args = 2
-    alias = "h"
+    """
+    desc: 'Displays information about available commands'
+    usage: '[command] [whisper]'
+    max_args: 2
+    alias: 'h'
+    """
 
     @staticmethod
     async def run(bot, namespace, text, args, sender, trip, ulevel):
@@ -46,7 +48,7 @@ Run {bot.prefix}help <command> [whisper] for more information about a specific c
             event = "whisper"
 
         if command in commands["command"]:
-            desc = bot.cmd_map[event][command].get("description", "Command has no description.")
+            desc = bot.cmd_map[event][command].get("desc", "Command has no description.")
             usage = bot.cmd_map[event][command].get("usage", "")
             await bot.reply(sender, f"""`{command}`\n\\-\n{desc}\n\\-\nUsage: {f"/w {bot.config['nick']} {command}" if whisper_help else f"{bot.prefix}{command}"} {usage}""")
             return

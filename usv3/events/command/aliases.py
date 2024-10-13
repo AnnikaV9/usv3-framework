@@ -3,7 +3,9 @@
 #
 
 class Module:
-    description = "Lists all commands that have aliases"
+    """
+    desc: 'Lists all commands that have aliases'
+    """
 
     @staticmethod
     async def run(bot, namespace, text, args, sender, trip, ulevel):
