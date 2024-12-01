@@ -31,8 +31,8 @@ license = "Unlicense"
 authors = ["AnnikaV9 <carrot.moncher@gmail.com>"]
 
 [tool.poetry.group.core.dependencies]
-websockets = "~13.1.0"
-uvloop = "~0.20.0"
+websockets = "~14.1.0"
+uvloop = "~0.21.0"
 loguru = "~0.7.2"
 "ruamel.yaml" = "~0.18.6"
 
